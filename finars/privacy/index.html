@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinArs — Polityka prywatności</title>
+<style>
+  :root{
+    --bg-deep: #0b0f2e;
+    --bg-mid: #131a44;
+    --card: rgba(24, 31, 71, 0.55);
+    --card-border: rgba(120, 140, 255, 0.18);
+    --accent: #5ee0d0;
+    --accent-soft: #8f9dff;
+    --text: #e7e9fb;
+    --text-dim: #a7add6;
+  }
+
+  * { box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Starfield background */
+  body{
+    background-image:
+      radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1px 1px at 75% 30%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1.5px 1.5px at 50% 60%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 85% 80%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 35% 90%, rgba(255,255,255,0.35), transparent),
+      radial-gradient(1px 1px at 60% 10%, rgba(255,255,255,0.4), transparent),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+  }
+
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+  }
+
+  header.hero{
+    text-align: left;
+    margin-bottom: 36px;
+  }
+
+  .logo-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom: 22px;
+  }
+
+  .logo-mark{
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    flex-shrink:0;
+    box-shadow: 0 4px 16px rgba(60, 100, 255, 0.4);
+  }
+
+  .logo-mark img{
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    display: block;
+  }
+
+  .brand-name{
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+
+  h1{
+    font-size: clamp(28px, 5vw, 38px);
+    margin: 0 0 8px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #ffffff, var(--accent-soft));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .updated{
+    color: var(--text-dim);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .intro{
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 22px 24px;
+    margin-top: 28px;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text);
+    backdrop-filter: blur(6px);
+  }
+
+  section.card{
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 24px 26px;
+    margin-top: 20px;
+    backdrop-filter: blur(6px);
+  }
+
+  section.card h2{
+    display:flex;
+    align-items:baseline;
+    gap: 10px;
+    font-size: 19px;
+    margin: 0 0 14px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  section.card h2 .num{
+    color: var(--accent-soft);
+    font-weight: 800;
+    opacity: 0.6;
+    font-size: 15px;
+  }
+
+  section.card p{
+    margin: 0 0 12px;
+    line-height: 1.65;
+    color: var(--text);
+    font-size: 15.5px;
+  }
+
+  section.card p:last-child{ margin-bottom: 0; }
+
+  ul.policy-list{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  ul.policy-list li{
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+    color: var(--text);
+    font-size: 15.5px;
+  }
+
+  ul.policy-list li:last-child{ margin-bottom: 0; }
+
+  ul.policy-list li::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  a{
+    color: var(--accent-soft);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(143,157,255,0.35);
+  }
+  a:hover{ border-bottom-color: var(--accent-soft); }
+
+  footer{
+    text-align:center;
+    margin-top: 48px;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  @media (max-width: 480px){
+    .wrap{ padding: 32px 16px 60px; }
+    section.card{ padding: 20px 18px; }
+    .intro{ padding: 18px 20px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="hero">
+      <div class="logo-row">
+        <div class="logo-mark"><img src="logo.png" alt="FinArs logo"></div>
+        <div class="brand-name">FinArs</div>
+      </div>
+      <h1>Polityka prywatności</h1>
+      <p class="updated">Ostatnia aktualizacja: 28 września 2026 r.</p>
+    </header>
+
+    <div class="intro">
+      Szanujemy Twoją prywatność. Aplikacja FinArs została zaprojektowana w taki sposób, aby dane finansowe i biznesowe użytkownika były przechowywane lokalnie na jego urządzeniu. Aplikacja nie posiada własnego serwera do przechowywania danych finansowych użytkowników.
+    </div>
+
+    <section class="card">
+      <h2><span class="num">1.</span> Administrator danych</h2>
+      <p>Administratorem danych osobowych przetwarzanych w związku z korzystaniem z aplikacji FinArs jest Arsenii Panicev, działający jako niezależny twórca w ramach projektu AP STUDIO.</p>
+      <p>W sprawach dotyczących prywatności i przetwarzania danych można skontaktować się pod adresem: <a href="mailto:apstudiomobile@gmail.com">apstudiomobile@gmail.com</a></p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">2.</span> Dane przechowywane lokalnie na urządzeniu</h2>
+      <p>Podstawowe dane wprowadzane przez użytkownika do aplikacji FinArs są przechowywane lokalnie na jego urządzeniu i nie są przesyłane na serwery administratora.</p>
+      <p>Dotyczy to w szczególności:</p>
+      <ul class="policy-list">
+        <li>danych dotyczących przychodów i wydatków;</li>
+        <li>kwot, dat, kategorii i opisów transakcji;</li>
+        <li>danych faktur oraz danych kontrahentów, w tym numerów NIP;</li>
+        <li>danych dotyczących produktów i stanów magazynowych;</li>
+        <li>danych dotyczących inwentaryzacji;</li>
+        <li>zdjęć paragonów dodanych do transakcji;</li>
+        <li>lokalnie utworzonych raportów i innych danych związanych z działalnością użytkownika.</li>
+      </ul>
+      <p>Administrator nie prowadzi własnej chmurowej bazy danych zawierającej powyższe informacje.</p>
+      <p>Jeżeli użytkownik samodzielnie eksportuje lub tworzy kopię zapasową danych, plik jest zapisywany w wybranym przez użytkownika miejscu na urządzeniu lub w miejscu, które użytkownik sam wybierze podczas udostępniania lub zapisywania pliku. Aplikacja nie korzysta z automatycznej kopii zapasowej systemu Android dla swoich danych.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">3.</span> Kod PIN i zabezpieczenia aplikacji</h2>
+      <p>Jeżeli użytkownik korzysta z zabezpieczenia aplikacji kodem PIN, kod ten nie jest przechowywany w postaci jawnej. Na urządzeniu zapisywany jest wyłącznie jego skrót kryptograficzny (hash) wraz z losową solą, w pamięci aplikacji. Kod PIN i jego skrót nie są przesyłane na serwery administratora.</p>
+      <p>Dane biometryczne, takie jak odcisk palca lub dane dotyczące rozpoznawania twarzy, nie są pobierane ani przechowywane przez FinArs. Uwierzytelnianie biometryczne jest realizowane przez system operacyjny urządzenia, a aplikacja otrzymuje wyłącznie informację o wyniku weryfikacji.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">4.</span> Usługi zewnętrzne</h2>
+      <p>FinArs korzysta z usług zewnętrznych niezbędnych do obsługi płatności, subskrypcji, reklam oraz wyszukiwania nazw produktów po kodzie kreskowym. Usługi te mogą przetwarzać określone informacje techniczne, identyfikatory oraz informacje związane z zakupami zgodnie z własnymi zasadami prywatności.</p>
+      <p><strong>Google Play Billing</strong></p>
+      <p>Zakupy subskrypcji FinArs Pro są obsługiwane przez Google Play Billing. FinArs nie otrzymuje danych karty płatniczej użytkownika. Informacje dotyczące płatności są przetwarzane przez Google zgodnie z zasadami Google Play.</p>
+      <p>Polityka prywatności Google: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">https://policies.google.com/privacy</a></p>
+      <p><strong>RevenueCat</strong></p>
+      <p>FinArs korzysta z usługi RevenueCat do zarządzania statusem subskrypcji FinArs Pro.</p>
+      <p>RevenueCat może przetwarzać między innymi anonimowy identyfikator użytkownika aplikacji generowany przez usługę, informacje techniczne dotyczące urządzenia (np. adres IP, model urządzenia, wersję systemu) oraz informacje związane z zakupem i statusem subskrypcji, takie jak aktywacja, wygaśnięcie lub okres próbny.</p>
+      <p>RevenueCat nie otrzymuje danych finansowych i biznesowych zapisanych lokalnie w FinArs, takich jak przychody, wydatki, faktury czy dane kontrahentów.</p>
+      <p>Polityka prywatności RevenueCat: <a href="https://www.revenuecat.com/privacy/" target="_blank" rel="noopener">https://www.revenuecat.com/privacy/</a></p>
+      <p><strong>Google AdMob i Google UMP</strong></p>
+      <p>FinArs może wyświetlać reklamy za pośrednictwem Google AdMob użytkownikom, którzy nie posiadają aktywnej subskrypcji Pro.</p>
+      <p>W zależności od ustawień urządzenia, konfiguracji reklam oraz udzielonych zgód Google AdMob może przetwarzać między innymi identyfikator reklamowy urządzenia, adres IP, informacje o urządzeniu, dane diagnostyczne oraz informacje związane z wyświetlaniem i interakcją z reklamami.</p>
+      <p>Google User Messaging Platform (UMP) służy do uzyskania i zarządzania zgodą użytkownika na określone sposoby przetwarzania danych, zgodnie z obowiązującymi przepisami. Zgodę można zmienić lub wycofać w ustawieniach aplikacji, o ile opcja ta jest dostępna, oraz w ustawieniach reklam urządzenia.</p>
+      <p>Polityka prywatności Google: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">https://policies.google.com/privacy</a></p>
+      <p><strong>Open Food Facts</strong></p>
+      <p>W module magazynu, po zeskanowaniu kodu kreskowego produktu, FinArs może zapytać otwartą bazę Open Food Facts o nazwę produktu. W tym celu do serwisu Open Food Facts przesyłany jest numer zeskanowanego kodu kreskowego. Wraz z zapytaniem serwis technicznie otrzymuje adres IP urządzenia.</p>
+      <p>Do Open Food Facts nie są przesyłane żadne inne dane z aplikacji (np. ceny, stany magazynowe, dane faktur czy kontrahentów). Jeżeli zapytanie się nie powiedzie lub produkt nie zostanie znaleziony, użytkownik może wprowadzić nazwę ręcznie. Wyszukiwanie następuje wyłącznie w reakcji na skanowanie kodu przez użytkownika.</p>
+      <p>Polityka prywatności Open Food Facts: <a href="https://world.openfoodfacts.org/privacy" target="_blank" rel="noopener">https://world.openfoodfacts.org/privacy</a></p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">5.</span> Dane finansowe i dane przekazywane usługom zewnętrznym</h2>
+      <p>FinArs nie przekazuje usługom reklamowym ani systemowi płatności danych wprowadzonych przez użytkownika do lokalnej bazy aplikacji, takich jak:</p>
+      <ul class="policy-list">
+        <li>przychody i wydatki;</li>
+        <li>dane faktur;</li>
+        <li>dane kontrahentów;</li>
+        <li>numery NIP;</li>
+        <li>dane produktów;</li>
+        <li>stany magazynowe;</li>
+        <li>zdjęcia paragonów.</li>
+      </ul>
+      <p>Dane te pozostają lokalnie na urządzeniu użytkownika, z wyjątkiem sytuacji, gdy użytkownik samodzielnie eksportuje, udostępnia lub przesyła je poza aplikację. Jedyną informacją związaną z modułem magazynu, która opuszcza urządzenie, jest numer zeskanowanego kodu kreskowego wysyłany do Open Food Facts, zgodnie z sekcją 4.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">6.</span> Podstawy prawne przetwarzania</h2>
+      <p>W zakresie, w jakim FinArs przetwarza dane osobowe, dzieje się to na następujących podstawach (RODO):</p>
+      <ul class="policy-list">
+        <li><strong>obsługa subskrypcji FinArs Pro</strong> — art. 6 ust. 1 lit. b RODO (wykonanie umowy), realizowane przez Google Play i RevenueCat;</li>
+        <li><strong>reklamy personalizowane i użycie identyfikatora reklamowego</strong> — art. 6 ust. 1 lit. a RODO (zgoda), zbierana za pomocą Google UMP;</li>
+        <li><strong>wyszukiwanie nazwy produktu po kodzie kreskowym</strong> — art. 6 ust. 1 lit. b RODO (świadczenie funkcji wywołanej przez użytkownika);</li>
+        <li><strong>kontakt z administratorem (wiadomości e-mail)</strong> — art. 6 ust. 1 lit. f RODO (prawnie uzasadniony interes w udzieleniu odpowiedzi) lub lit. b, jeżeli dotyczy umowy;</li>
+        <li><strong>zapewnienie bezpieczeństwa i dochodzenie roszczeń</strong> — art. 6 ust. 1 lit. f RODO.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">7.</span> Przekazywanie danych poza Europejski Obszar Gospodarczy</h2>
+      <p>Dostawcy usług wymienieni w sekcji 4, w szczególności Google i RevenueCat, mogą przetwarzać dane poza Europejskim Obszarem Gospodarczym, w tym w Stanach Zjednoczonych. Takie przekazanie odbywa się na podstawie mechanizmów przewidzianych w RODO, stosowanych przez tych dostawców, na przykład decyzji Komisji Europejskiej o odpowiednim stopniu ochrony lub standardowych klauzul umownych. Szczegóły znajdują się w politykach prywatności poszczególnych dostawców.</p>
+      <p>FinArs nie przekazuje poza EOG lokalnie przechowywanych danych finansowych i biznesowych użytkownika.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">8.</span> Uprawnienia aplikacji</h2>
+      <p>FinArs może korzystać z następujących uprawnień urządzenia:</p>
+      <p><strong>Aparat</strong> — może być wykorzystywany do skanowania kodów kreskowych produktów oraz wykonywania zdjęć paragonów.</p>
+      <p><strong>Powiadomienia</strong> — mogą być wykorzystywane do przypominania o terminach płatności faktur, limitach oraz innych zdarzeniach związanych z funkcjonowaniem aplikacji.</p>
+      <p><strong>Dostęp do pamięci / plików</strong> — na urządzeniach i wersjach systemu, które tego wymagają, dostęp do plików może być wykorzystywany do zapisywania, odczytywania lub eksportowania kopii zapasowych, raportów oraz innych plików utworzonych przez użytkownika.</p>
+      <p><strong>Dostęp do Internetu</strong> — połączenie z Internetem jest wykorzystywane wyłącznie przez funkcje wymagające komunikacji z usługami zewnętrznymi: obsługę subskrypcji, reklamy oraz wyszukiwanie nazw produktów po kodzie kreskowym (Open Food Facts).</p>
+      <p>FinArs nie wykorzystuje połączenia z Internetem do przesyłania lokalnej bazy danych finansowych użytkownika na serwer administratora.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">9.</span> Przechowywanie i usuwanie danych</h2>
+      <p>Dane finansowe i biznesowe przechowywane lokalnie w aplikacji pozostają na urządzeniu użytkownika do momentu ich usunięcia przez użytkownika, wyczyszczenia danych aplikacji lub odinstalowania aplikacji, z zastrzeżeniem danych, które użytkownik wcześniej samodzielnie wyeksportował lub udostępnił poza aplikacją.</p>
+      <p>Użytkownik może zarządzać lokalnymi danymi z poziomu aplikacji, w tym usuwać dane zgodnie z dostępnymi funkcjami FinArs.</p>
+      <p>Wiadomości przesłane na adres e-mail administratora są przechowywane przez czas niezbędny do obsługi zgłoszenia oraz, w razie potrzeby, przez okres umożliwiający dochodzenie lub obronę przed roszczeniami.</p>
+      <p>Dane przetwarzane przez zewnętrznych dostawców, takich jak Google, RevenueCat lub Open Food Facts, podlegają zasadom przechowywania i usuwania określonym przez tych dostawców oraz obowiązującym przepisom prawa.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">10.</span> Prawa użytkownika</h2>
+      <p>W zakresie, w jakim przepisy RODO mają zastosowanie do przetwarzania danych osobowych użytkownika, użytkownikowi mogą przysługiwać w szczególności prawa do:</p>
+      <ul class="policy-list">
+        <li>dostępu do swoich danych;</li>
+        <li>sprostowania danych;</li>
+        <li>usunięcia danych;</li>
+        <li>ograniczenia przetwarzania;</li>
+        <li>wniesienia sprzeciwu wobec przetwarzania;</li>
+        <li>przenoszenia danych, jeżeli ma ono zastosowanie;</li>
+        <li>wycofania zgody w dowolnym momencie, jeżeli przetwarzanie odbywa się na podstawie zgody (wycofanie zgody nie wpływa na zgodność z prawem przetwarzania dokonanego przed jej wycofaniem).</li>
+      </ul>
+      <p>W przypadku danych przechowywanych wyłącznie lokalnie użytkownik może samodzielnie zarządzać nimi za pomocą funkcji dostępnych w aplikacji lub ustawień urządzenia.</p>
+      <p>W przypadku danych przetwarzanych przez zewnętrznych dostawców prawa użytkownika mogą być realizowane również zgodnie z zasadami tych dostawców.</p>
+      <p>Użytkownik ma również prawo do wniesienia skargi do właściwego organu nadzorczego, w szczególności do Prezesa Urzędu Ochrony Danych Osobowych (UODO) w Polsce.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">11.</span> Dzieci</h2>
+      <p>FinArs nie jest przeznaczony dla dzieci poniżej 16 roku życia. Nie zamierzamy świadomie gromadzić danych osobowych dzieci poniżej tego wieku.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">12.</span> Bezpieczeństwo</h2>
+      <p>Stosujemy rozsądne środki techniczne i organizacyjne mające na celu ochronę danych przetwarzanych w związku z korzystaniem z FinArs.</p>
+      <p>Jednocześnie należy pamiętać, że żaden sposób przechowywania danych ani transmisji przez Internet nie może zagwarantować absolutnego bezpieczeństwa.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">13.</span> Zmiany w Polityce prywatności</h2>
+      <p>Niniejsza Polityka prywatności może być okresowo aktualizowana, na przykład w przypadku zmian w funkcjonalności aplikacji, wykorzystywanych usługach zewnętrznych lub obowiązujących przepisach.</p>
+      <p>Aktualna wersja Polityki prywatności będzie publikowana w miejscu, w którym użytkownik może się z nią zapoznać. Data ostatniej aktualizacji znajduje się na początku dokumentu.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">14.</span> Kontakt</h2>
+      <p>W przypadku pytań dotyczących prywatności, danych osobowych lub działania aplikacji FinArs można skontaktować się z administratorem:</p>
+      <p>E-mail: <a href="mailto:apstudiomobile@gmail.com">apstudiomobile@gmail.com</a></p>
+    </section>
+
+    <footer>
+      © 2026 FinArs &amp; AP STUDIO. Wszystkie prawa zastrzeżone.
+    </footer>
+
+  </div>
+</body>
+</html>
