@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#040608">
+<title>WayArs — order assistant for taxi drivers and couriers</title>
+<meta name="description" content="WayArs reads new orders from Uber, Bolt, Wolt, FreeNow and other apps and instantly shows the net amount after fuel and tax — and whether the order pays off.">
+<meta property="og:title" content="WayArs — order assistant for taxi drivers and couriers">
+<meta property="og:description" content="Know in a second whether an order is worth it. Net profit after fuel and tax, right over Uber, Bolt, Wolt and FreeNow.">
+<meta property="og:image" content="https://apstudiomobile.pl/wayars/icon.png">
+<meta property="og:url" content="https://apstudiomobile.pl/wayars/">
+<link rel="canonical" href="https://apstudiomobile.pl/wayars/">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#040608; --bg-2:#070B10; --surface:#0E141B; --surface-2:#1A2129; --line:#222B36;
+    --green:#00E676; --green-2:#00C853; --teal:#14B8A6; --amber:#FFB300; --red:#FF5252; --blue:#3B82F6;
+    --text:#FFFFFF; --text-2:#9CA3AF; --text-3:#6B7280;
+    --r-lg:24px; --r-md:16px; --maxw:1160px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;background:var(--bg)}
+  body{
+    background:
+      radial-gradient(900px 520px at 85% -8%, rgba(0,230,118,.16), transparent 60%),
+      radial-gradient(800px 480px at -10% 30%, rgba(20,184,166,.10), transparent 60%),
+      var(--bg);
+    color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.55;
+    min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+  h1,h2,h3,.brand{font-family:'Space Grotesk','Inter',sans-serif;letter-spacing:-.02em}
+  .accent{background:linear-gradient(90deg,#00E676,#14B8A6);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* ---------- header ---------- */
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:rgba(4,6,8,.72);border-bottom:1px solid rgba(255,255,255,.06)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:22px}
+  .brand img{width:36px;height:36px;border-radius:10px}
+  .brand b{color:var(--green)}
+  .nav-links{display:flex;gap:28px;font-size:15px;color:var(--text-2);font-weight:500}
+  .nav-links a:hover{color:var(--text)}
+  .nav-right{display:flex;align-items:center;gap:10px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:14px;font-weight:700;cursor:pointer;border:0;transition:transform .15s,box-shadow .2s,background .2s}
+  .btn:active{transform:scale(.97)}
+  .btn-sm{height:42px;padding:0 16px;font-size:14px;background:var(--green);color:#03140A}
+  .btn-sm:hover{box-shadow:0 0 0 4px rgba(0,230,118,.18)}
+
+  /* language picker */
+  .lang{position:relative}
+  .lang-btn{height:42px;padding:0 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);color:var(--text);
+    display:flex;align-items:center;gap:8px;font:600 14px 'Inter',sans-serif;cursor:pointer}
+  .lang-btn svg{opacity:.75}
+  .lang-menu{position:absolute;right:0;top:50px;width:230px;max-height:min(70vh,520px);overflow:auto;background:var(--surface);
+    border:1px solid var(--line);border-radius:16px;padding:6px;box-shadow:0 24px 60px rgba(0,0,0,.6);display:none}
+  .lang.open .lang-menu{display:block}
+  .lang-menu button{width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;
+    background:none;border:0;color:var(--text);font:500 15px 'Inter',sans-serif;cursor:pointer;text-align:left}
+  .lang-menu button span{color:var(--text-3);font-size:12px;font-weight:600}
+  .lang-menu button:hover,.lang-menu button.on{background:var(--surface-2)}
+  .lang-menu button.on{color:var(--green)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 40px}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(0,230,118,.08);
+    border:1px solid rgba(0,230,118,.3);color:var(--green);font-size:13px;font-weight:700;letter-spacing:.02em}
+  .pill i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+  .hero h1{font-size:clamp(36px,5.2vw,64px);line-height:1.04;margin:20px 0 18px;font-weight:700}
+  .hero p.lead{font-size:clamp(16px,1.5vw,19px);color:var(--text-2);max-width:560px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:30px}
+  .gplay{height:62px;padding:0 22px 0 18px;background:#fff;color:#000;border-radius:16px}
+  .gplay:hover{box-shadow:0 0 0 5px rgba(0,230,118,.25),0 14px 40px rgba(0,230,118,.25)}
+  .gplay .t{display:flex;flex-direction:column;line-height:1.1;text-align:left}
+  .gplay small{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+  .gplay strong{font-size:21px;font-weight:800;font-family:'Space Grotesk',sans-serif}
+  .trial{display:flex;align-items:center;gap:8px;color:var(--text-2);font-size:14px;font-weight:600}
+  .trial svg{color:var(--green)}
+  .meta-row{display:flex;flex-wrap:wrap;gap:18px;margin-top:26px;color:var(--text-3);font-size:13px;font-weight:600}
+  .meta-row span{display:flex;align-items:center;gap:6px}
+
+  /* phone mockup */
+  .phone-stage{position:relative;display:flex;justify-content:center;padding:20px 0}
+  .glow{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,.28),transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);filter:blur(10px)}
+  .phone{position:relative;text-align:left;width:300px;height:610px;border-radius:46px;background:#05070d;border:10px solid #1b2131;
+    box-shadow:0 40px 90px rgba(0,0,0,.7),inset 0 0 0 2px #2c3350;overflow:hidden}
+  .phone .notch{position:absolute;top:12px;left:50%;width:90px;height:24px;margin-left:-45px;border-radius:14px;background:#000;z-index:3}
+  .map{position:absolute;inset:0;background:#141925}
+  .map svg{position:absolute;inset:0}
+  .ord{position:absolute;left:12px;right:12px;bottom:14px;background:#fff;color:#111;border-radius:22px;padding:14px 16px;box-shadow:0 -6px 30px rgba(0,0,0,.4)}
+  .ord .chip{display:inline-block;background:#111;color:#fff;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:700}
+  .ord .price{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-top:4px}
+  .ord .leg{font-size:12px;color:#444;font-weight:600}
+  .ord .acc{margin-top:10px;height:40px;border-radius:12px;background:#276EF1;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .verdict{position:absolute;left:14px;right:14px;top:58px;border-radius:22px;background:rgba(14,20,27,.96);border:2px solid var(--green);
+    padding:14px 16px;box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 30px rgba(0,230,118,.25);animation:pop 4.5s ease-in-out infinite}
+  .verdict .top{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;color:var(--text-2);letter-spacing:.04em}
+  .verdict .top img{width:24px;height:24px;border-radius:7px}
+  .verdict .net{font-size:30px;font-weight:800;margin-top:6px;font-family:'Space Grotesk',sans-serif;white-space:nowrap}
+  .verdict .net small{font-size:14px;color:var(--text-2);font-weight:600;font-family:'Inter',sans-serif}
+  .verdict .sub{font-size:12px;color:var(--text-2);font-weight:600}
+  .verdict .rates{display:flex;gap:8px;margin-top:10px}
+  .verdict .rates div{flex:1;background:var(--surface-2);border-radius:12px;padding:8px 10px}
+  .verdict .rates b{display:block;font-size:17px;color:var(--green)}
+  .verdict .rates span{font-size:11px;color:var(--text-2);font-weight:600}
+  .verdict .ok{margin-top:10px;height:40px;border-radius:12px;background:var(--green);color:#03140A;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+  @keyframes pop{0%,8%{opacity:0;transform:translateY(-14px) scale(.96)}14%,88%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateY(-8px) scale(.98)}}
+  .float{position:absolute;padding:10px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:700;
+    box-shadow:0 14px 40px rgba(0,0,0,.5);display:flex;align-items:center;gap:8px;animation:bob 5s ease-in-out infinite}
+  .float i{width:8px;height:8px;border-radius:50%}
+  .f1{left:-6px;top:120px}.f2{right:-10px;top:300px;animation-delay:-1.6s}.f3{left:6px;bottom:90px;animation-delay:-3.2s}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+  /* ---------- sections ---------- */
+  section{padding:70px 0}
+  .sec-head{text-align:center;max-width:680px;margin:0 auto 40px}
+  .sec-head h2{font-size:clamp(28px,3.6vw,44px);line-height:1.1;font-weight:700}
+  .sec-head p{color:var(--text-2);margin-top:12px;font-size:17px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:rgba(0,230,118,.45);transform:translateY(-3px)}
+  .ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(0,230,118,.10);color:var(--green);margin-bottom:16px}
+  .card h3{font-size:20px;margin-bottom:8px}
+  .card p{color:var(--text-2);font-size:15px}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+  .step{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px 24px 24px}
+  .step:before{counter-increment:s;content:counter(s);position:absolute;top:-18px;left:24px;width:40px;height:40px;border-radius:12px;background:var(--green);color:#03140A;
+    display:flex;align-items:center;justify-content:center;font:800 18px 'Space Grotesk',sans-serif;box-shadow:0 8px 24px rgba(0,230,118,.35)}
+  .step h3{font-size:19px;margin:8px 0}
+  .step p{color:var(--text-2);font-size:15px}
+
+  .apps{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+  .app{padding:14px 22px;border-radius:16px;background:var(--surface);border:1px solid var(--line);font-weight:700;font-size:16px;display:flex;align-items:center;gap:10px}
+  .app i{width:10px;height:10px;border-radius:50%}
+  .app.more{border-style:dashed;color:var(--green);border-color:rgba(0,230,118,.5)}
+
+  .dl{position:relative;overflow:hidden;border-radius:32px;padding:56px 40px;text-align:center;
+    background:radial-gradient(600px 300px at 50% 0%,rgba(0,230,118,.22),transparent 70%),var(--surface);border:1px solid rgba(0,230,118,.3)}
+  .dl img{width:84px;height:84px;border-radius:22px;box-shadow:0 14px 40px rgba(0,230,118,.3)}
+  .dl h2{font-size:clamp(26px,3.4vw,40px);margin:18px 0 10px}
+  .dl p{color:var(--text-2);margin-bottom:26px}
+  .dl .cta-row{justify-content:center}
+
+  .contacts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .ct{display:flex;align-items:center;gap:14px;padding:18px;border-radius:20px;background:var(--surface);border:1px solid var(--line);transition:border-color .2s,transform .2s}
+  .ct:hover{transform:translateY(-3px)}
+  .ct .ib{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+  .ct b{display:block;font-size:16px}
+  .ct span{font-size:13px;color:var(--text-2);overflow-wrap:anywhere}
+
+  footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 0 40px;color:var(--text-3);font-size:14px}
+  .foot{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+  .foot nav{display:flex;flex-wrap:wrap;gap:20px}
+  .foot a:hover{color:var(--text)}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.verdict,.float{animation:none}}
+
+  /* ---------- tablet / mobile ---------- */
+  @media (max-width:960px){
+    .hero-grid{grid-template-columns:1fr;gap:20px;text-align:center}
+    .hero p.lead{margin:0 auto}
+    .cta-row,.meta-row{justify-content:center}
+    .grid3,.steps{grid-template-columns:1fr 1fr}
+    .contacts{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+  }
+  @media (max-width:600px){
+    .hero{padding:34px 0 10px}
+    section{padding:48px 0}
+    .grid3,.steps,.contacts{grid-template-columns:1fr}
+    .steps{gap:30px}
+    .btn-sm.dl-top{display:none}
+    .phone{width:270px;height:560px}
+    .verdict{left:10px;right:10px;padding:12px 13px}
+    .verdict .net{font-size:25px}
+    .verdict .net small{font-size:12px}
+    .f1{left:-4px}.f2{right:-4px}
+    .float{font-size:12px;padding:8px 11px}
+    .dl{padding:40px 20px;border-radius:26px}
+    .gplay{width:100%;max-width:340px}
+    .foot{flex-direction:column;text-align:center}
+    .foot nav{justify-content:center}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><img src="icon.png" alt="WayArs"><span>Way<b>Ars</b></span></a>
+    <nav class="nav-links">
+      <a href="#features" data-i18n="nav_features">Features</a>
+      <a href="#how" data-i18n="nav_how">How it works</a>
+      <a href="#contact" data-i18n="nav_contact">Contact</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang" id="lang">
+        <button class="lang-btn" id="langBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Language">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+          <span id="langCode">EN</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="lang-menu" id="langMenu" role="listbox"></div>
+      </div>
+      <a class="btn btn-sm dl-top gp-link" href="#" target="_blank" rel="noopener" data-i18n="cta_download">Download</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="pill"><i></i><span data-i18n="hero_badge">For taxi drivers and couriers</span></span>
+        <h1><span data-i18n="hero_title_1">Know in a second</span> <span class="accent" data-i18n="hero_title_2">whether an order is worth it</span></h1>
+        <p class="lead" data-i18n="hero_sub">WayArs reads new orders from Uber, Bolt, Wolt, FreeNow and other apps and instantly shows the net amount after fuel and tax — and whether the order pays off.</p>
+        <div class="cta-row">
+          <a class="btn gplay gp-link" href="#" target="_blank" rel="noopener">
+            <svg width="30" height="32" viewBox="0 0 30 32" aria-hidden="true"><path d="M2 1.5 L17 16 L2 30.5 C1.3 30.1 1 29.4 1 28.6 V3.4 C1 2.6 1.3 1.9 2 1.5Z" fill="#00C853"/><path d="M17 16 L21.8 11.3 L26.6 14 C28.4 15 28.4 17 26.6 18 L21.8 20.7Z" fill="#FFB300"/><path d="M2 1.5 C2.6 1.1 3.5 1.1 4.3 1.6 L21.8 11.3 L17 16Z" fill="#3B82F6"/><path d="M2 30.5 L17 16 L21.8 20.7 L4.3 30.4 C3.5 30.9 2.6 30.9 2 30.5Z" fill="#FF5252"/></svg>
+            <span class="t"><small data-i18n="gp_small">Get it on</small><strong>Google Play</strong></span>
+          </a>
+          <span class="trial"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero_trial">30 minutes of free trial</span></span>
+        </div>
+        <div class="meta-row">
+          <span>📱 Android</span><span>🌍 <span data-i18n="meta_langs">17 languages</span></span><span>💱 <span data-i18n="meta_curr">26 currencies</span></span>
+        </div>
+      </div>
+
+      <div class="phone-stage">
+        <div class="glow"></div>
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="map">
+            <svg width="100%" height="100%" viewBox="0 0 300 610" preserveAspectRatio="xMidYMid slice">
+              <g stroke="#232a3a" stroke-width="7" fill="none"><path d="M-10 160 L310 210"/><path d="M-10 330 L310 280"/><path d="M80 -10 L120 620"/><path d="M230 -10 L200 620"/><path d="M-10 470 L310 500"/></g>
+              <path d="M95 420 C120 360 150 330 205 300 S220 220 215 170" stroke="#00E676" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="2 10"/>
+              <circle cx="95" cy="420" r="9" fill="#3B82F6"/><circle cx="215" cy="170" r="9" fill="#00E676"/>
+            </svg>
+          </div>
+          <div class="ord">
+            <span class="chip">UberX</span>
+            <div class="price">141,85 zł</div>
+            <div class="leg">4 min (1,8 km) · 51 min (37,8 km)</div>
+            <div class="acc">Akceptuj</div>
+          </div>
+          <div class="verdict">
+            <div class="top"><span data-i18n="mock_new">NEW ORDER · Uber</span><img src="icon.png" alt=""></div>
+            <div class="net">111,77 zł <small data-i18n="mock_net">net</small></div>
+            <div class="sub" data-i18n="mock_after">after fuel and tax · 39,6 km · 55 min</div>
+            <div class="rates">
+              <div><b>3,13 zł</b><span data-i18n="mock_km">per km</span></div>
+              <div><b>2,25 zł</b><span data-i18n="mock_min">per minute</span></div>
+            </div>
+            <div class="ok" data-i18n="mock_ok">Worth it ✓</div>
+          </div>
+        </div>
+        <div class="float f1"><i style="background:#00E676"></i>Bolt</div>
+        <div class="float f2"><i style="background:#3B82F6"></i>Uber</div>
+        <div class="float f3"><i style="background:#00C2E8"></i>Wolt</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 data-i18n="feat_title">Everything a driver needs</h2>
+        <p data-i18n="feat_sub">Stop guessing. Every order gets a clear answer before you accept it.</p>
+      </div>
+      <div class="grid3">
+        <div class="card reveal"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M9 8h6M9 12h6"/></svg></div>
+          <h3 data-i18n="f1_t">Verdict over any app</h3><p data-i18n="f1_d">A small card appears right over the order screen: rate per km, per minute and a clear verdict.</p></div>
+        <div class="card reveal"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <h3 data-i18n="f2_t">Real net profit</h3><p data-i18n="f2_d">Fuel consumption, fuel price and your tax rate are subtracted, so you see what you actually keep.</p></div>
+        <div class="card reveal"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14l-1.5-6.5A2 2 0 0 0 15.6 9H8.4a2 2 0 0 0-1.9 1.5Z"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/><path d="M10 6h4"/></svg></div>
+          <h3 data-i18n="f3_t">Taxi and delivery</h3><p data-i18n="f3_d">Uber, Bolt, Wolt, FreeNow and Stuart are built in. Pickup and the trip itself are counted together.</p></div>
+        <div class="card reveal"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div>
+          <h3 data-i18n="f4_t">Any app, any country</h3><p data-i18n="f4_d">Add your own app and calibrate it in three taps. 26 currencies and 17 languages.</p></div>
+        <div class="card reveal"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></div>
+          <h3 data-i18n="f5_t">Your own rules</h3><p data-i18n="f5_d">Pick a preset or set your own limits for bad, average and good orders. Daily and weekly stats included.</p></div>
+        <div class="card reveal"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <h3 data-i18n="f6_t">Private and safe</h3><p data-i18n="f6_d">Everything is processed on your phone. WayArs only reads the screen — it never taps or accepts orders for you.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how">
+    <div class="wrap">
+      <div class="sec-head reveal"><h2 data-i18n="how_title">How it works</h2></div>
+      <div class="steps">
+        <div class="step reveal"><h3 data-i18n="s1_t">Install and allow access</h3><p data-i18n="s1_d">Turn on the accessibility service and the overlay — the app explains every step.</p></div>
+        <div class="step reveal"><h3 data-i18n="s2_t">Set it up for you</h3><p data-i18n="s2_d">Choose your currency, vehicle, fuel price and tax rate.</p></div>
+        <div class="step reveal"><h3 data-i18n="s3_t">Drive</h3><p data-i18n="s3_d">Every new order gets a verdict in a second. You decide, WayArs does the math.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPS -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head reveal"><h2 data-i18n="apps_title">Works with</h2></div>
+      <div class="apps reveal">
+        <div class="app"><i style="background:#fff"></i>Uber Driver</div>
+        <div class="app"><i style="background:#34D399"></i>Bolt Driver</div>
+        <div class="app"><i style="background:#34D399"></i>Bolt Courier</div>
+        <div class="app"><i style="background:#00C2E8"></i>Wolt</div>
+        <div class="app"><i style="background:#E9A3E6"></i>FreeNow</div>
+        <div class="app"><i style="background:#8B5CF6"></i>Stuart</div>
+        <div class="app more" data-i18n="apps_more">+ any app you add yourself</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section id="download">
+    <div class="wrap">
+      <div class="dl reveal">
+        <img src="icon.png" alt="WayArs">
+        <h2 data-i18n="dl_title">Start earning smarter today</h2>
+        <p data-i18n="dl_sub">Download WayArs from Google Play and try it for free.</p>
+        <div class="cta-row">
+          <a class="btn gplay gp-link" href="#" target="_blank" rel="noopener">
+            <svg width="30" height="32" viewBox="0 0 30 32" aria-hidden="true"><path d="M2 1.5 L17 16 L2 30.5 C1.3 30.1 1 29.4 1 28.6 V3.4 C1 2.6 1.3 1.9 2 1.5Z" fill="#00C853"/><path d="M17 16 L21.8 11.3 L26.6 14 C28.4 15 28.4 17 26.6 18 L21.8 20.7Z" fill="#FFB300"/><path d="M2 1.5 C2.6 1.1 3.5 1.1 4.3 1.6 L21.8 11.3 L17 16Z" fill="#3B82F6"/><path d="M2 30.5 L17 16 L21.8 20.7 L4.3 30.4 C3.5 30.9 2.6 30.9 2 30.5Z" fill="#FF5252"/></svg>
+            <span class="t"><small data-i18n="gp_small">Get it on</small><strong>Google Play</strong></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="sec-head reveal"><h2 data-i18n="contact_title">Contact us</h2><p data-i18n="contact_sub">Questions, ideas or a problem with orders? Write to us any time.</p></div>
+      <div class="contacts">
+        <a class="ct reveal" href="https://t.me/wayars_app" target="_blank" rel="noopener" style="--c:#229ED9">
+          <div class="ib" style="background:rgba(34,158,217,.15);color:#229ED9"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3 18.7 19.4c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13 1.4 11.5c-1-.3-1.1-1 .2-1.5L20.5 2.8c.9-.3 1.7.2 1.4 1.5Z"/></svg></div>
+          <div><b>Telegram</b><span>@wayars_app</span></div></a>
+        <a class="ct reveal" href="https://www.instagram.com/apstudiomobile/" target="_blank" rel="noopener">
+          <div class="ib" style="background:rgba(225,48,108,.15);color:#E1306C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></div>
+          <div><b>Instagram</b><span>@apstudiomobile</span></div></a>
+        <a class="ct reveal" href="https://www.tiktok.com/@apstudiomobile.pl" target="_blank" rel="noopener">
+          <div class="ib" style="background:rgba(37,244,238,.12);color:#25F4EE"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 2h-3.3v13.3a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9.1a6.3 6.3 0 1 0 5.3 6.2V8.6a7.6 7.6 0 0 0 4.5 1.5V6.8A4.6 4.6 0 0 1 16.5 2Z"/></svg></div>
+          <div><b>TikTok</b><span>@apstudiomobile.pl</span></div></a>
+        <a class="ct reveal" href="mailto:apstudiomobile@gmail.com?subject=WayArs">
+          <div class="ib" style="background:rgba(0,230,118,.12);color:#00E676"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 6 9 7 9-7"/></svg></div>
+          <div><b>E-mail</b><span>apstudiomobile@<wbr>gmail.com</span></div></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 AP Studio · WayArs</span>
+    <nav>
+      <a href="/wayars/privacy/" data-i18n="foot_privacy">Privacy Policy</a>
+      <a href="/" data-i18n="foot_studio">AP Studio — all apps</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+const PLAY_URL = "https://play.google.com/store/apps/details?id=com.wayars.app";
+
+/* Same 17 languages as the app. Keys missing in a language fall back to English. */
+const LANGS = [
+  ["en","English"],["pl","Polski"],["ru","Русский"],["uk","Українська"],["de","Deutsch"],["fr","Français"],
+  ["ro","Română"],["cs","Čeština"],["bg","Български"],["hu","Magyar"],["da","Dansk"],["nb","Norsk"],
+  ["sv","Svenska"],["az","Azərbaycan"],["hy","Հայերեն"],["ka","ქართული"],["uz","Oʻzbekcha"]
+];
+
+const T = {
+en:{meta_title:"WayArs — order assistant for taxi drivers and couriers",meta_desc:"WayArs reads new orders from Uber, Bolt, Wolt, FreeNow and other apps and instantly shows the net amount after fuel and tax — and whether the order pays off.",
+nav_features:"Features",nav_how:"How it works",nav_contact:"Contact",cta_download:"Download",
+hero_badge:"For taxi drivers and couriers",hero_title_1:"Know in a second",hero_title_2:"whether an order is worth it",
+hero_sub:"WayArs reads new orders from Uber, Bolt, Wolt, FreeNow and other apps and instantly shows the net amount after fuel and tax — and whether the order pays off.",
+gp_small:"Get it on",hero_trial:"30 minutes of free trial",meta_langs:"17 languages",meta_curr:"26 currencies",
+mock_new:"NEW ORDER · Uber",mock_net:"net",mock_after:"after fuel and tax · 39,6 km · 55 min",mock_km:"per km",mock_min:"per minute",mock_ok:"Worth it ✓",
+feat_title:"Everything a driver needs",feat_sub:"Stop guessing. Every order gets a clear answer before you accept it.",
+f1_t:"Verdict over any app",f1_d:"A small card appears right over the order screen: rate per km, per minute and a clear verdict.",
+f2_t:"Real net profit",f2_d:"Fuel consumption, fuel price and your tax rate are subtracted, so you see what you actually keep.",
+f3_t:"Taxi and delivery",f3_d:"Uber, Bolt, Wolt, FreeNow and Stuart are built in. Pickup and the trip itself are counted together.",
+f4_t:"Any app, any country",f4_d:"Add your own app and calibrate it in three taps. 26 currencies and 17 languages.",
+f5_t:"Your own rules",f5_d:"Pick a preset or set your own limits for bad, average and good orders. Daily and weekly stats included.",
+f6_t:"Private and safe",f6_d:"Everything is processed on your phone. WayArs only reads the screen — it never taps or accepts orders for you.",
+how_title:"How it works",s1_t:"Install and allow access",s1_d:"Turn on the accessibility service and the overlay — the app explains every step.",
+s2_t:"Set it up for you",s2_d:"Choose your currency, vehicle, fuel price and tax rate.",s3_t:"Drive",s3_d:"Every new order gets a verdict in a second. You decide, WayArs does the math.",
+apps_title:"Works with",apps_more:"+ any app you add yourself",dl_title:"Start earning smarter today",dl_sub:"Download WayArs from Google Play and try it for free.",
+contact_title:"Contact us",contact_sub:"Questions, ideas or a problem with orders? Write to us any time.",foot_privacy:"Privacy Policy",foot_studio:"AP Studio — all apps"},
+
+pl:{meta_title:"WayArs — asystent zleceń dla kierowców taxi i kurierów",meta_desc:"WayArs odczytuje nowe zlecenia z Ubera, Bolta, Wolta, FreeNow i innych aplikacji i od razu pokazuje kwotę netto po paliwie i podatku — oraz czy zlecenie się opłaca.",
+nav_features:"Funkcje",nav_how:"Jak to działa",nav_contact:"Kontakt",cta_download:"Pobierz",
+hero_badge:"Dla kierowców taxi i kurierów",hero_title_1:"W sekundę wiesz,",hero_title_2:"czy zlecenie się opłaca",
+hero_sub:"WayArs odczytuje nowe zlecenia z Ubera, Bolta, Wolta, FreeNow i innych aplikacji i od razu pokazuje kwotę netto po paliwie i podatku — oraz czy zlecenie się opłaca.",
+gp_small:"Pobierz z",hero_trial:"30 minut za darmo na próbę",meta_langs:"17 języków",meta_curr:"26 walut",
+mock_new:"NOWE ZLECENIE · Uber",mock_net:"netto",mock_after:"po paliwie i podatku · 39,6 km · 55 min",mock_km:"za km",mock_min:"za minutę",mock_ok:"Opłaca się ✓",
+feat_title:"Wszystko, czego potrzebuje kierowca",feat_sub:"Koniec ze zgadywaniem. Każde zlecenie dostaje jasną odpowiedź, zanim je przyjmiesz.",
+f1_t:"Ocena nad każdą aplikacją",f1_d:"Mała karta pojawia się nad ekranem zlecenia: stawka za km, za minutę i jasna ocena.",
+f2_t:"Prawdziwy zysk netto",f2_d:"Spalanie, cena paliwa i Twoja stawka podatku są odejmowane — widzisz, ile naprawdę zostaje.",
+f3_t:"Taxi i dostawy",f3_d:"Uber, Bolt, Wolt, FreeNow i Stuart są wbudowane. Dojazd i sam przejazd liczą się razem.",
+f4_t:"Każda aplikacja, każdy kraj",f4_d:"Dodaj własną aplikację i skalibruj ją w trzech dotknięciach. 26 walut i 17 języków.",
+f5_t:"Twoje zasady",f5_d:"Wybierz gotowy profil albo ustaw własne progi dla złych, średnich i dobrych zleceń. Statystyki dzienne i tygodniowe.",
+f6_t:"Prywatnie i bezpiecznie",f6_d:"Wszystko jest przetwarzane na Twoim telefonie. WayArs tylko odczytuje ekran — nigdy nie klika i nie przyjmuje zleceń za Ciebie.",
+how_title:"Jak to działa",s1_t:"Zainstaluj i daj dostęp",s1_d:"Włącz usługę ułatwień dostępu i nakładkę — aplikacja wyjaśni każdy krok.",
+s2_t:"Dopasuj do siebie",s2_d:"Wybierz walutę, pojazd, cenę paliwa i stawkę podatku.",s3_t:"Jedź",s3_d:"Każde nowe zlecenie dostaje ocenę w sekundę. Ty decydujesz, WayArs liczy.",
+apps_title:"Działa z",apps_more:"+ każda aplikacja, którą dodasz sam",dl_title:"Zacznij zarabiać mądrzej już dziś",dl_sub:"Pobierz WayArs z Google Play i wypróbuj za darmo.",
+contact_title:"Kontakt",contact_sub:"Pytania, pomysły albo problem ze zleceniami? Napisz do nas w każdej chwili.",foot_privacy:"Polityka prywatności",foot_studio:"AP Studio — wszystkie aplikacje"},
+
+ru:{meta_title:"WayArs — помощник по заказам для таксистов и курьеров",meta_desc:"WayArs считывает новые заказы из Uber, Bolt, Wolt, FreeNow и других приложений и сразу показывает чистую сумму после топлива и налога — и выгоден ли заказ.",
+nav_features:"Возможности",nav_how:"Как это работает",nav_contact:"Контакты",cta_download:"Скачать",
+hero_badge:"Для таксистов и курьеров",hero_title_1:"За секунду поймите,",hero_title_2:"выгоден ли заказ",
+hero_sub:"WayArs считывает новые заказы из Uber, Bolt, Wolt, FreeNow и других приложений и сразу показывает чистую сумму после топлива и налога — и выгоден ли заказ.",
+gp_small:"Доступно в",hero_trial:"30 минут бесплатно на пробу",meta_langs:"17 языков",meta_curr:"26 валют",
+mock_new:"НОВЫЙ ЗАКАЗ · Uber",mock_net:"чистыми",mock_after:"после топлива и налога · 39,6 км · 55 мин",mock_km:"за км",mock_min:"за минуту",mock_ok:"Выгодно ✓",
+feat_title:"Всё, что нужно водителю",feat_sub:"Хватит гадать. Каждый заказ получает понятный ответ ещё до того, как вы его примете.",
+f1_t:"Оценка поверх любого приложения",f1_d:"Небольшая карточка появляется прямо над экраном заказа: ставка за км, за минуту и понятная оценка.",
+f2_t:"Настоящая чистая прибыль",f2_d:"Расход, цена топлива и ваша ставка налога вычитаются — вы видите, сколько реально остаётся.",
+f3_t:"Такси и доставка",f3_d:"Uber, Bolt, Wolt, FreeNow и Stuart уже встроены. Подача и сама поездка считаются вместе.",
+f4_t:"Любое приложение, любая страна",f4_d:"Добавьте своё приложение и откалибруйте его в три нажатия. 26 валют и 17 языков.",
+f5_t:"Ваши правила",f5_d:"Выберите готовый пресет или задайте свои пороги для плохих, средних и хороших заказов. Статистика за день и неделю.",
+f6_t:"Приватно и безопасно",f6_d:"Всё обрабатывается на вашем телефоне. WayArs только читает экран — никогда не нажимает и не принимает заказы за вас.",
+how_title:"Как это работает",s1_t:"Установите и дайте доступ",s1_d:"Включите службу специальных возможностей и оверлей — приложение объяснит каждый шаг.",
+s2_t:"Настройте под себя",s2_d:"Выберите валюту, транспорт, цену топлива и ставку налога.",s3_t:"Работайте",s3_d:"Каждый новый заказ получает оценку за секунду. Решаете вы, считает WayArs.",
+apps_title:"Работает с",apps_more:"+ любое приложение, которое добавите сами",dl_title:"Начните зарабатывать умнее уже сегодня",dl_sub:"Скачайте WayArs в Google Play и попробуйте бесплатно.",
+contact_title:"Контакты",contact_sub:"Вопросы, идеи или проблема с заказами? Пишите в любое время.",foot_privacy:"Политика конфиденциальности",foot_studio:"AP Studio — все приложения"},
+
+uk:{meta_title:"WayArs — помічник із замовлень для таксистів і кур'єрів",meta_desc:"WayArs зчитує нові замовлення з Uber, Bolt, Wolt, FreeNow та інших застосунків і одразу показує чисту суму після пального й податку — і чи вигідне замовлення.",
+nav_features:"Можливості",nav_how:"Як це працює",nav_contact:"Контакти",cta_download:"Завантажити",
+hero_badge:"Для таксистів і кур'єрів",hero_title_1:"За секунду зрозумійте,",hero_title_2:"чи вигідне замовлення",
+hero_sub:"WayArs зчитує нові замовлення з Uber, Bolt, Wolt, FreeNow та інших застосунків і одразу показує чисту суму після пального й податку — і чи вигідне замовлення.",
+gp_small:"Доступно в",hero_trial:"30 хвилин безкоштовно на пробу",meta_langs:"17 мов",meta_curr:"26 валют",
+mock_new:"НОВЕ ЗАМОВЛЕННЯ · Uber",mock_net:"чистими",mock_after:"після пального й податку · 39,6 км · 55 хв",mock_km:"за км",mock_min:"за хвилину",mock_ok:"Вигідно ✓",
+feat_title:"Усе, що потрібно водієві",feat_sub:"Досить вгадувати. Кожне замовлення отримує зрозумілу відповідь ще до того, як ви його приймете.",
+f1_t:"Оцінка поверх будь-якого застосунку",f1_d:"Невелика картка з'являється просто над екраном замовлення: ставка за км, за хвилину та зрозуміла оцінка.",
+f2_t:"Справжній чистий прибуток",f2_d:"Витрата, ціна пального та ваша ставка податку віднімаються — ви бачите, скільки реально залишається.",
+f3_t:"Таксі й доставка",f3_d:"Uber, Bolt, Wolt, FreeNow і Stuart уже вбудовані. Подача й сама поїздка рахуються разом.",
+f4_t:"Будь-який застосунок, будь-яка країна",f4_d:"Додайте свій застосунок і відкалібруйте його у три дотики. 26 валют і 17 мов.",
+f5_t:"Ваші правила",f5_d:"Оберіть готовий пресет або задайте власні пороги для поганих, середніх і добрих замовлень. Статистика за день і тиждень.",
+f6_t:"Приватно й безпечно",f6_d:"Усе обробляється на вашому телефоні. WayArs лише читає екран — ніколи не натискає й не приймає замовлення за вас.",
+how_title:"Як це працює",s1_t:"Встановіть і дайте доступ",s1_d:"Увімкніть службу спеціальних можливостей і оверлей — застосунок пояснить кожен крок.",
+s2_t:"Налаштуйте під себе",s2_d:"Оберіть валюту, транспорт, ціну пального та ставку податку.",s3_t:"Працюйте",s3_d:"Кожне нове замовлення отримує оцінку за секунду. Вирішуєте ви, рахує WayArs.",
+apps_title:"Працює з",apps_more:"+ будь-який застосунок, який додасте самі",dl_title:"Почніть заробляти розумніше вже сьогодні",dl_sub:"Завантажте WayArs у Google Play і спробуйте безкоштовно.",
+contact_title:"Контакти",contact_sub:"Питання, ідеї чи проблема із замовленнями? Пишіть будь-коли.",foot_privacy:"Політика конфіденційності",foot_studio:"AP Studio — усі застосунки"},
+
+de:{meta_title:"WayArs — Auftragsassistent für Taxifahrer und Kuriere",meta_desc:"WayArs liest neue Aufträge aus Uber, Bolt, Wolt, FreeNow und anderen Apps und zeigt sofort den Nettobetrag nach Kraftstoff und Steuer — und ob sich der Auftrag lohnt.",
+nav_features:"Funktionen",nav_how:"So funktioniert's",nav_contact:"Kontakt",cta_download:"Herunterladen",
+hero_badge:"Für Taxifahrer und Kuriere",hero_title_1:"In einer Sekunde wissen,",hero_title_2:"ob sich ein Auftrag lohnt",
+hero_sub:"WayArs liest neue Aufträge aus Uber, Bolt, Wolt, FreeNow und anderen Apps und zeigt sofort den Nettobetrag nach Kraftstoff und Steuer — und ob sich der Auftrag lohnt.",
+gp_small:"Jetzt bei",hero_trial:"30 Minuten kostenlos testen",meta_langs:"17 Sprachen",meta_curr:"26 Währungen",
+mock_new:"NEUER AUFTRAG · Uber",mock_net:"netto",mock_after:"nach Kraftstoff und Steuer · 39,6 km · 55 min",mock_km:"pro km",mock_min:"pro Minute",mock_ok:"Lohnt sich ✓",
+feat_title:"Alles, was Fahrer brauchen",feat_sub:"Schluss mit Raten. Jeder Auftrag bekommt eine klare Antwort, bevor du annimmst.",
+f1_t:"Bewertung über jeder App",f1_d:"Eine kleine Karte erscheint direkt über dem Auftrag: Preis pro km, pro Minute und eine klare Bewertung.",
+f2_t:"Echter Nettogewinn",f2_d:"Verbrauch, Kraftstoffpreis und dein Steuersatz werden abgezogen — du siehst, was wirklich bleibt.",
+f3_t:"Taxi und Lieferung",f3_d:"Uber, Bolt, Wolt, FreeNow und Stuart sind integriert. Anfahrt und Fahrt werden zusammen gerechnet.",
+f4_t:"Jede App, jedes Land",f4_d:"Füge deine eigene App hinzu und kalibriere sie mit drei Tippern. 26 Währungen und 17 Sprachen.",
+f5_t:"Deine Regeln",f5_d:"Wähle ein Profil oder setze eigene Grenzen für schlechte, mittlere und gute Aufträge. Tages- und Wochenstatistik inklusive.",
+f6_t:"Privat und sicher",f6_d:"Alles wird auf deinem Handy verarbeitet. WayArs liest nur den Bildschirm — es tippt nie und nimmt keine Aufträge für dich an.",
+how_title:"So funktioniert's",s1_t:"Installieren und Zugriff erlauben",s1_d:"Bedienungshilfe und Overlay einschalten — die App erklärt jeden Schritt.",
+s2_t:"Auf dich einstellen",s2_d:"Währung, Fahrzeug, Kraftstoffpreis und Steuersatz wählen.",s3_t:"Losfahren",s3_d:"Jeder neue Auftrag wird in einer Sekunde bewertet. Du entscheidest, WayArs rechnet.",
+apps_title:"Funktioniert mit",apps_more:"+ jede App, die du selbst hinzufügst",dl_title:"Verdiene ab heute klüger",dl_sub:"Lade WayArs bei Google Play herunter und teste es kostenlos.",
+contact_title:"Kontakt",contact_sub:"Fragen, Ideen oder ein Problem mit Aufträgen? Schreib uns jederzeit.",foot_privacy:"Datenschutzerklärung",foot_studio:"AP Studio — alle Apps"},
+
+fr:{meta_title:"WayArs — l'assistant des chauffeurs VTC, taxis et livreurs",meta_desc:"WayArs lit les nouvelles courses d'Uber, Bolt, Wolt, FreeNow et d'autres applis et affiche aussitôt le montant net après carburant et impôt — et si la course est rentable.",
+nav_features:"Fonctions",nav_how:"Comment ça marche",nav_contact:"Contact",cta_download:"Télécharger",
+hero_badge:"Pour chauffeurs et livreurs",hero_title_1:"Sachez en une seconde",hero_title_2:"si une course est rentable",
+hero_sub:"WayArs lit les nouvelles courses d'Uber, Bolt, Wolt, FreeNow et d'autres applis et affiche aussitôt le montant net après carburant et impôt — et si la course est rentable.",
+gp_small:"Disponible sur",hero_trial:"30 minutes d'essai gratuit",meta_langs:"17 langues",meta_curr:"26 devises",
+mock_new:"NOUVELLE COURSE · Uber",mock_net:"net",mock_after:"après carburant et impôt · 39,6 km · 55 min",mock_km:"par km",mock_min:"par minute",mock_ok:"Rentable ✓",
+feat_title:"Tout ce dont un chauffeur a besoin",feat_sub:"Fini les devinettes. Chaque course reçoit une réponse claire avant que vous l'acceptiez.",
+f1_t:"Un verdict sur n'importe quelle appli",f1_d:"Une petite carte apparaît au-dessus de la course : tarif par km, par minute et un verdict clair.",
+f2_t:"Le vrai bénéfice net",f2_d:"Consommation, prix du carburant et votre taux d'impôt sont déduits : vous voyez ce qu'il vous reste vraiment.",
+f3_t:"Taxi et livraison",f3_d:"Uber, Bolt, Wolt, FreeNow et Stuart sont intégrés. L'approche et la course sont comptées ensemble.",
+f4_t:"Toute appli, tout pays",f4_d:"Ajoutez votre appli et étalonnez-la en trois touches. 26 devises et 17 langues.",
+f5_t:"Vos règles",f5_d:"Choisissez un profil ou fixez vos propres seuils pour les mauvaises, moyennes et bonnes courses. Statistiques du jour et de la semaine.",
+f6_t:"Privé et sûr",f6_d:"Tout est traité sur votre téléphone. WayArs lit seulement l'écran — il ne touche ni n'accepte jamais de course à votre place.",
+how_title:"Comment ça marche",s1_t:"Installez et autorisez l'accès",s1_d:"Activez le service d'accessibilité et l'overlay — l'appli explique chaque étape.",
+s2_t:"Réglez-la pour vous",s2_d:"Choisissez la devise, le véhicule, le prix du carburant et le taux d'impôt.",s3_t:"Roulez",s3_d:"Chaque nouvelle course reçoit un verdict en une seconde. Vous décidez, WayArs calcule.",
+apps_title:"Fonctionne avec",apps_more:"+ toute appli que vous ajoutez vous-même",dl_title:"Gagnez plus intelligemment dès aujourd'hui",dl_sub:"Téléchargez WayArs sur Google Play et essayez-le gratuitement.",
+contact_title:"Contact",contact_sub:"Une question, une idée ou un problème avec les courses ? Écrivez-nous à tout moment.",foot_privacy:"Politique de confidentialité",foot_studio:"AP Studio — toutes les applis"},
+
+ro:{meta_title:"WayArs — asistent de comenzi pentru taximetriști și curieri",meta_desc:"WayArs citește comenzile noi din Uber, Bolt, Wolt, FreeNow și alte aplicații și arată imediat suma netă după combustibil și impozit — și dacă merită comanda.",
+nav_features:"Funcții",nav_how:"Cum funcționează",nav_contact:"Contact",cta_download:"Descarcă",
+hero_badge:"Pentru taximetriști și curieri",hero_title_1:"Afli într-o secundă",hero_title_2:"dacă o comandă merită",
+hero_sub:"WayArs citește comenzile noi din Uber, Bolt, Wolt, FreeNow și alte aplicații și arată imediat suma netă după combustibil și impozit — și dacă merită comanda.",
+gp_small:"Disponibil pe",hero_trial:"30 de minute de probă gratuită",meta_langs:"17 limbi",meta_curr:"26 de monede",
+mock_new:"COMANDĂ NOUĂ · Uber",mock_net:"net",mock_after:"după combustibil și impozit · 39,6 km · 55 min",mock_km:"pe km",mock_min:"pe minut",mock_ok:"Merită ✓",
+feat_title:"Tot ce îi trebuie unui șofer",feat_sub:"Gata cu ghicitul. Fiecare comandă primește un răspuns clar înainte s-o accepți.",
+f1_t:"Verdict peste orice aplicație",f1_d:"Un mic card apare chiar peste ecranul comenzii: tarif pe km, pe minut și un verdict clar.",
+f2_t:"Profit net real",f2_d:"Consumul, prețul combustibilului și cota ta de impozit se scad — vezi cât îți rămâne cu adevărat.",
+f3_t:"Taxi și livrări",f3_d:"Uber, Bolt, Wolt, FreeNow și Stuart sunt incluse. Drumul la client și cursa se adună.",
+f4_t:"Orice aplicație, orice țară",f4_d:"Adaugă-ți propria aplicație și calibreaz-o din trei atingeri. 26 de monede și 17 limbi.",
+f5_t:"Regulile tale",f5_d:"Alege un profil sau setează-ți praguri pentru comenzi proaste, medii și bune. Statistici zilnice și săptămânale.",
+f6_t:"Privat și sigur",f6_d:"Totul se procesează pe telefonul tău. WayArs doar citește ecranul — nu apasă și nu acceptă niciodată comenzi în locul tău.",
+how_title:"Cum funcționează",s1_t:"Instalează și permite accesul",s1_d:"Activează serviciul de accesibilitate și overlay-ul — aplicația explică fiecare pas.",
+s2_t:"Setează pentru tine",s2_d:"Alege moneda, vehiculul, prețul combustibilului și cota de impozit.",s3_t:"Condu",s3_d:"Fiecare comandă nouă primește un verdict într-o secundă. Tu decizi, WayArs calculează.",
+apps_title:"Funcționează cu",apps_more:"+ orice aplicație pe care o adaugi tu",dl_title:"Câștigă mai inteligent de azi",dl_sub:"Descarcă WayArs din Google Play și încearcă-l gratuit.",
+contact_title:"Contact",contact_sub:"Întrebări, idei sau o problemă cu comenzile? Scrie-ne oricând.",foot_privacy:"Politica de confidențialitate",foot_studio:"AP Studio — toate aplicațiile"},
+
+cs:{meta_title:"WayArs — asistent zakázek pro taxikáře a kurýry",meta_desc:"WayArs čte nové zakázky z Uberu, Boltu, Woltu, FreeNow a dalších aplikací a hned ukáže čistou částku po palivu a dani — a jestli se zakázka vyplatí.",
+nav_features:"Funkce",nav_how:"Jak to funguje",nav_contact:"Kontakt",cta_download:"Stáhnout",
+hero_badge:"Pro taxikáře a kurýry",hero_title_1:"Za vteřinu víte,",hero_title_2:"jestli se zakázka vyplatí",
+hero_sub:"WayArs čte nové zakázky z Uberu, Boltu, Woltu, FreeNow a dalších aplikací a hned ukáže čistou částku po palivu a dani — a jestli se zakázka vyplatí.",
+gp_small:"Nyní na",hero_trial:"30 minut zkušební doby zdarma",meta_langs:"17 jazyků",meta_curr:"26 měn",
+mock_new:"NOVÁ ZAKÁZKA · Uber",mock_net:"čistého",mock_after:"po palivu a dani · 39,6 km · 55 min",mock_km:"za km",mock_min:"za minutu",mock_ok:"Vyplatí se ✓",
+feat_title:"Vše, co řidič potřebuje",feat_sub:"Konec hádání. Každá zakázka dostane jasnou odpověď dřív, než ji přijmete.",
+f1_t:"Hodnocení nad každou aplikací",f1_d:"Nad zakázkou se objeví malá karta: sazba za km, za minutu a jasné hodnocení.",
+f2_t:"Skutečný čistý zisk",f2_d:"Spotřeba, cena paliva a vaše sazba daně se odečtou — vidíte, kolik vám opravdu zůstane.",
+f3_t:"Taxi i rozvoz",f3_d:"Uber, Bolt, Wolt, FreeNow a Stuart jsou vestavěné. Přistavení i jízda se počítají dohromady.",
+f4_t:"Jakákoli aplikace, jakákoli země",f4_d:"Přidejte vlastní aplikaci a zkalibrujte ji třemi klepnutími. 26 měn a 17 jazyků.",
+f5_t:"Vaše pravidla",f5_d:"Vyberte profil nebo nastavte vlastní hranice pro špatné, průměrné a dobré zakázky. Denní a týdenní statistiky.",
+f6_t:"Soukromě a bezpečně",f6_d:"Vše se zpracovává ve vašem telefonu. WayArs jen čte obrazovku — nikdy neklepe ani nepřijímá zakázky za vás.",
+how_title:"Jak to funguje",s1_t:"Nainstalujte a povolte přístup",s1_d:"Zapněte službu usnadnění a overlay — aplikace vysvětlí každý krok.",
+s2_t:"Nastavte si ji",s2_d:"Vyberte měnu, vozidlo, cenu paliva a sazbu daně.",s3_t:"Jezděte",s3_d:"Každá nová zakázka dostane hodnocení za vteřinu. Vy rozhodujete, WayArs počítá.",
+apps_title:"Funguje s",apps_more:"+ jakákoli aplikace, kterou přidáte sami",dl_title:"Vydělávejte chytřeji už dnes",dl_sub:"Stáhněte si WayArs z Google Play a vyzkoušejte ho zdarma.",
+contact_title:"Kontakt",contact_sub:"Dotazy, nápady nebo problém se zakázkami? Napište nám kdykoli.",foot_privacy:"Zásady ochrany soukromí",foot_studio:"AP Studio — všechny aplikace"},
+
+bg:{meta_title:"WayArs — помощник за поръчки за таксиметрови шофьори и куриери",meta_desc:"WayArs чете новите поръчки от Uber, Bolt, Wolt, FreeNow и други приложения и веднага показва нетната сума след гориво и данък — и дали поръчката си струва.",
+nav_features:"Възможности",nav_how:"Как работи",nav_contact:"Контакти",cta_download:"Изтегли",
+hero_badge:"За таксиметрови шофьори и куриери",hero_title_1:"За секунда разбирате",hero_title_2:"дали поръчката си струва",
+hero_sub:"WayArs чете новите поръчки от Uber, Bolt, Wolt, FreeNow и други приложения и веднага показва нетната сума след гориво и данък — и дали поръчката си струва.",
+gp_small:"Изтегли от",hero_trial:"30 минути безплатен пробен период",meta_langs:"17 езика",meta_curr:"26 валути",
+mock_new:"НОВА ПОРЪЧКА · Uber",mock_net:"нето",mock_after:"след гориво и данък · 39,6 км · 55 мин",mock_km:"на км",mock_min:"на минута",mock_ok:"Изгодно ✓",
+feat_title:"Всичко, от което шофьорът има нужда",feat_sub:"Без гадаене. Всяка поръчка получава ясен отговор, преди да я приемете.",
+f1_t:"Оценка върху всяко приложение",f1_d:"Малка карта се появява над екрана на поръчката: цена на км, на минута и ясна оценка.",
+f2_t:"Истинска нетна печалба",f2_d:"Разходът, цената на горивото и данъчната ви ставка се изваждат — виждате колко реално ви остава.",
+f3_t:"Такси и доставки",f3_d:"Uber, Bolt, Wolt, FreeNow и Stuart са вградени. Пътят до клиента и самият курс се смятат заедно.",
+f4_t:"Всяко приложение, всяка държава",f4_d:"Добавете свое приложение и го калибрирайте с три докосвания. 26 валути и 17 езика.",
+f5_t:"Вашите правила",f5_d:"Изберете готов профил или задайте свои прагове за лоши, средни и добри поръчки. Дневна и седмична статистика.",
+f6_t:"Поверително и сигурно",f6_d:"Всичко се обработва на телефона ви. WayArs само чете екрана — никога не натиска и не приема поръчки вместо вас.",
+how_title:"Как работи",s1_t:"Инсталирайте и разрешете достъп",s1_d:"Включете услугата за достъпност и overlay-я — приложението обяснява всяка стъпка.",
+s2_t:"Настройте го за себе си",s2_d:"Изберете валута, превозно средство, цена на горивото и данъчна ставка.",s3_t:"Карайте",s3_d:"Всяка нова поръчка получава оценка за секунда. Вие решавате, WayArs смята.",
+apps_title:"Работи с",apps_more:"+ всяко приложение, което добавите сами",dl_title:"Започнете да печелите по-умно още днес",dl_sub:"Изтеглете WayArs от Google Play и го пробвайте безплатно.",
+contact_title:"Контакти",contact_sub:"Въпроси, идеи или проблем с поръчките? Пишете ни по всяко време.",foot_privacy:"Политика за поверителност",foot_studio:"AP Studio — всички приложения"},
+
+hu:{meta_title:"WayArs — rendelésasszisztens taxisoknak és futároknak",meta_desc:"A WayArs kiolvassa az új rendeléseket az Uber, Bolt, Wolt, FreeNow és más appokból, és azonnal megmutatja a nettó összeget üzemanyag és adó után — és hogy megéri-e.",
+nav_features:"Funkciók",nav_how:"Hogyan működik",nav_contact:"Kapcsolat",cta_download:"Letöltés",
+hero_badge:"Taxisoknak és futároknak",hero_title_1:"Egy másodperc alatt tudod,",hero_title_2:"megéri-e a rendelés",
+hero_sub:"A WayArs kiolvassa az új rendeléseket az Uber, Bolt, Wolt, FreeNow és más appokból, és azonnal megmutatja a nettó összeget üzemanyag és adó után — és hogy megéri-e.",
+gp_small:"Szerezd be:",hero_trial:"30 perc ingyenes próba",meta_langs:"17 nyelv",meta_curr:"26 pénznem",
+mock_new:"ÚJ RENDELÉS · Uber",mock_net:"nettó",mock_after:"üzemanyag és adó után · 39,6 km · 55 perc",mock_km:"km-enként",mock_min:"percenként",mock_ok:"Megéri ✓",
+feat_title:"Minden, ami egy sofőrnek kell",feat_sub:"Elég a találgatásból. Minden rendelés világos választ kap, mielőtt elfogadod.",
+f1_t:"Értékelés bármely app felett",f1_d:"Egy kis kártya jelenik meg a rendelés felett: km-díj, percdíj és egyértelmű értékelés.",
+f2_t:"Valódi nettó haszon",f2_d:"A fogyasztás, az üzemanyagár és az adókulcsod levonásra kerül — látod, mennyi marad valójában.",
+f3_t:"Taxi és kiszállítás",f3_d:"Uber, Bolt, Wolt, FreeNow és Stuart beépítve. A felvételi út és maga az út együtt számít.",
+f4_t:"Bármely app, bármely ország",f4_d:"Add hozzá a saját appodat, és kalibráld három koppintással. 26 pénznem és 17 nyelv.",
+f5_t:"A saját szabályaid",f5_d:"Válassz profilt, vagy állíts saját határokat a rossz, közepes és jó rendelésekre. Napi és heti statisztika.",
+f6_t:"Privát és biztonságos",f6_d:"Minden a telefonodon történik. A WayArs csak olvassa a képernyőt — soha nem koppint és nem fogad el helyetted rendelést.",
+how_title:"Hogyan működik",s1_t:"Telepítsd és adj hozzáférést",s1_d:"Kapcsold be a kisegítő szolgáltatást és az overlayt — az app minden lépést elmagyaráz.",
+s2_t:"Állítsd be magadra",s2_d:"Válassz pénznemet, járművet, üzemanyagárat és adókulcsot.",s3_t:"Vezess",s3_d:"Minden új rendelés egy másodperc alatt értékelést kap. Te döntesz, a WayArs számol.",
+apps_title:"Működik ezekkel",apps_more:"+ bármely app, amit te adsz hozzá",dl_title:"Keress okosabban már ma",dl_sub:"Töltsd le a WayArs-t a Google Playről, és próbáld ki ingyen.",
+contact_title:"Kapcsolat",contact_sub:"Kérdés, ötlet vagy gond a rendelésekkel? Írj nekünk bármikor.",foot_privacy:"Adatvédelmi irányelvek",foot_studio:"AP Studio — összes app"},
+
+da:{meta_title:"WayArs — ordreassistent til taxachauffører og bude",meta_desc:"WayArs læser nye ordrer fra Uber, Bolt, Wolt, FreeNow og andre apps og viser straks nettobeløbet efter brændstof og skat — og om ordren kan betale sig.",
+nav_features:"Funktioner",nav_how:"Sådan virker det",nav_contact:"Kontakt",cta_download:"Hent",
+hero_badge:"Til taxachauffører og bude",hero_title_1:"Vid på et sekund,",hero_title_2:"om en ordre kan betale sig",
+hero_sub:"WayArs læser nye ordrer fra Uber, Bolt, Wolt, FreeNow og andre apps og viser straks nettobeløbet efter brændstof og skat — og om ordren kan betale sig.",
+gp_small:"Hent den på",hero_trial:"30 minutters gratis prøve",meta_langs:"17 sprog",meta_curr:"26 valutaer",
+mock_new:"NY ORDRE · Uber",mock_net:"netto",mock_after:"efter brændstof og skat · 39,6 km · 55 min",mock_km:"pr. km",mock_min:"pr. minut",mock_ok:"Kan betale sig ✓",
+feat_title:"Alt, hvad en chauffør har brug for",feat_sub:"Slut med gætterier. Hver ordre får et klart svar, før du accepterer.",
+f1_t:"Vurdering oven på enhver app",f1_d:"Et lille kort vises over ordren: pris pr. km, pr. minut og en klar vurdering.",
+f2_t:"Ægte nettoindtjening",f2_d:"Forbrug, brændstofpris og din skattesats trækkes fra — du ser, hvad du reelt beholder.",
+f3_t:"Taxa og levering",f3_d:"Uber, Bolt, Wolt, FreeNow og Stuart er indbygget. Afhentning og selve turen tælles sammen.",
+f4_t:"Enhver app, ethvert land",f4_d:"Tilføj din egen app og kalibrer den med tre tryk. 26 valutaer og 17 sprog.",
+f5_t:"Dine egne regler",f5_d:"Vælg en profil eller sæt egne grænser for dårlige, middel og gode ordrer. Dags- og ugestatistik.",
+f6_t:"Privat og sikkert",f6_d:"Alt behandles på din telefon. WayArs læser kun skærmen — den trykker aldrig og accepterer aldrig ordrer for dig.",
+how_title:"Sådan virker det",s1_t:"Installer og giv adgang",s1_d:"Slå tilgængelighedstjenesten og overlayet til — appen forklarer hvert trin.",
+s2_t:"Tilpas den til dig",s2_d:"Vælg valuta, køretøj, brændstofpris og skattesats.",s3_t:"Kør",s3_d:"Hver ny ordre får en vurdering på et sekund. Du bestemmer, WayArs regner.",
+apps_title:"Virker med",apps_more:"+ enhver app, du selv tilføjer",dl_title:"Tjen klogere allerede i dag",dl_sub:"Hent WayArs i Google Play, og prøv den gratis.",
+contact_title:"Kontakt",contact_sub:"Spørgsmål, idéer eller problemer med ordrer? Skriv til os når som helst.",foot_privacy:"Privatlivspolitik",foot_studio:"AP Studio — alle apps"},
+
+nb:{meta_title:"WayArs — oppdragsassistent for taxisjåfører og budbringere",meta_desc:"WayArs leser nye oppdrag fra Uber, Bolt, Wolt, FreeNow og andre apper og viser straks nettobeløpet etter drivstoff og skatt — og om oppdraget lønner seg.",
+nav_features:"Funksjoner",nav_how:"Slik fungerer det",nav_contact:"Kontakt",cta_download:"Last ned",
+hero_badge:"For taxisjåfører og budbringere",hero_title_1:"Vit på et sekund",hero_title_2:"om et oppdrag lønner seg",
+hero_sub:"WayArs leser nye oppdrag fra Uber, Bolt, Wolt, FreeNow og andre apper og viser straks nettobeløpet etter drivstoff og skatt — og om oppdraget lønner seg.",
+gp_small:"Last ned på",hero_trial:"30 minutter gratis prøve",meta_langs:"17 språk",meta_curr:"26 valutaer",
+mock_new:"NYTT OPPDRAG · Uber",mock_net:"netto",mock_after:"etter drivstoff og skatt · 39,6 km · 55 min",mock_km:"per km",mock_min:"per minutt",mock_ok:"Lønner seg ✓",
+feat_title:"Alt en sjåfør trenger",feat_sub:"Slutt å gjette. Hvert oppdrag får et klart svar før du takker ja.",
+f1_t:"Vurdering over enhver app",f1_d:"Et lite kort dukker opp over oppdraget: pris per km, per minutt og en klar vurdering.",
+f2_t:"Ekte nettofortjeneste",f2_d:"Forbruk, drivstoffpris og skattesatsen din trekkes fra — du ser hva du faktisk sitter igjen med.",
+f3_t:"Taxi og levering",f3_d:"Uber, Bolt, Wolt, FreeNow og Stuart er innebygd. Henting og selve turen telles sammen.",
+f4_t:"Enhver app, ethvert land",f4_d:"Legg til din egen app og kalibrer den med tre trykk. 26 valutaer og 17 språk.",
+f5_t:"Dine egne regler",f5_d:"Velg en profil eller sett egne grenser for dårlige, middels og gode oppdrag. Dags- og ukestatistikk.",
+f6_t:"Privat og trygt",f6_d:"Alt behandles på telefonen din. WayArs leser bare skjermen — den trykker aldri og godtar aldri oppdrag for deg.",
+how_title:"Slik fungerer det",s1_t:"Installer og gi tilgang",s1_d:"Slå på tilgjengelighetstjenesten og overlegget — appen forklarer hvert steg.",
+s2_t:"Tilpass den til deg",s2_d:"Velg valuta, kjøretøy, drivstoffpris og skattesats.",s3_t:"Kjør",s3_d:"Hvert nytt oppdrag får en vurdering på et sekund. Du bestemmer, WayArs regner.",
+apps_title:"Fungerer med",apps_more:"+ enhver app du legger til selv",dl_title:"Tjen smartere allerede i dag",dl_sub:"Last ned WayArs fra Google Play og prøv gratis.",
+contact_title:"Kontakt",contact_sub:"Spørsmål, ideer eller problemer med oppdrag? Skriv til oss når som helst.",foot_privacy:"Personvernerklæring",foot_studio:"AP Studio — alle apper"},
+
+sv:{meta_title:"WayArs — uppdragsassistent för taxiförare och bud",meta_desc:"WayArs läser nya uppdrag från Uber, Bolt, Wolt, FreeNow och andra appar och visar direkt nettobeloppet efter bränsle och skatt — och om uppdraget lönar sig.",
+nav_features:"Funktioner",nav_how:"Så fungerar det",nav_contact:"Kontakt",cta_download:"Ladda ner",
+hero_badge:"För taxiförare och bud",hero_title_1:"Vet på en sekund",hero_title_2:"om ett uppdrag lönar sig",
+hero_sub:"WayArs läser nya uppdrag från Uber, Bolt, Wolt, FreeNow och andra appar och visar direkt nettobeloppet efter bränsle och skatt — och om uppdraget lönar sig.",
+gp_small:"Ladda ned på",hero_trial:"30 minuters gratis provperiod",meta_langs:"17 språk",meta_curr:"26 valutor",
+mock_new:"NYTT UPPDRAG · Uber",mock_net:"netto",mock_after:"efter bränsle och skatt · 39,6 km · 55 min",mock_km:"per km",mock_min:"per minut",mock_ok:"Lönar sig ✓",
+feat_title:"Allt en förare behöver",feat_sub:"Sluta gissa. Varje uppdrag får ett tydligt svar innan du tackar ja.",
+f1_t:"Bedömning ovanpå alla appar",f1_d:"Ett litet kort visas ovanför uppdraget: pris per km, per minut och en tydlig bedömning.",
+f2_t:"Verklig nettovinst",f2_d:"Förbrukning, bränslepris och din skattesats dras av — du ser vad du faktiskt behåller.",
+f3_t:"Taxi och leverans",f3_d:"Uber, Bolt, Wolt, FreeNow och Stuart är inbyggda. Upphämtning och själva resan räknas ihop.",
+f4_t:"Vilken app som helst, vilket land som helst",f4_d:"Lägg till din egen app och kalibrera den med tre tryck. 26 valutor och 17 språk.",
+f5_t:"Dina egna regler",f5_d:"Välj en profil eller sätt egna gränser för dåliga, medel och bra uppdrag. Dags- och veckostatistik.",
+f6_t:"Privat och säkert",f6_d:"Allt behandlas i din telefon. WayArs läser bara skärmen — den trycker aldrig och accepterar aldrig uppdrag åt dig.",
+how_title:"Så fungerar det",s1_t:"Installera och ge åtkomst",s1_d:"Slå på tillgänglighetstjänsten och overlayen — appen förklarar varje steg.",
+s2_t:"Anpassa den efter dig",s2_d:"Välj valuta, fordon, bränslepris och skattesats.",s3_t:"Kör",s3_d:"Varje nytt uppdrag får en bedömning på en sekund. Du bestämmer, WayArs räknar.",
+apps_title:"Fungerar med",apps_more:"+ vilken app du själv lägger till",dl_title:"Tjäna smartare redan i dag",dl_sub:"Ladda ner WayArs från Google Play och prova gratis.",
+contact_title:"Kontakt",contact_sub:"Frågor, idéer eller problem med uppdrag? Skriv till oss när som helst.",foot_privacy:"Integritetspolicy",foot_studio:"AP Studio — alla appar"},
+
+az:{meta_title:"WayArs — taksi sürücüləri və kuryerlər üçün sifariş köməkçisi",meta_desc:"WayArs Uber, Bolt, Wolt, FreeNow və digər tətbiqlərdən yeni sifarişləri oxuyur və yanacaq və vergidən sonra xalis məbləği, həmçinin sifarişin sərfəli olub-olmadığını dərhal göstərir.",
+nav_features:"İmkanlar",nav_how:"Necə işləyir",nav_contact:"Əlaqə",cta_download:"Yüklə",
+hero_badge:"Taksi sürücüləri və kuryerlər üçün",hero_title_1:"Bir saniyədə bilin:",hero_title_2:"sifariş sərfəlidirmi",
+hero_sub:"WayArs Uber, Bolt, Wolt, FreeNow və digər tətbiqlərdən yeni sifarişləri oxuyur və yanacaq və vergidən sonra xalis məbləği, həmçinin sifarişin sərfəli olub-olmadığını dərhal göstərir.",
+gp_small:"Yükləyin:",hero_trial:"30 dəqiqə pulsuz sınaq",meta_langs:"17 dil",meta_curr:"26 valyuta",
+mock_new:"YENİ SİFARİŞ · Uber",mock_net:"xalis",mock_after:"yanacaq və vergidən sonra · 39,6 km · 55 dəq",mock_km:"km başına",mock_min:"dəqiqə başına",mock_ok:"Sərfəlidir ✓",
+feat_title:"Sürücüyə lazım olan hər şey",feat_sub:"Təxmin etməyə son. Hər sifariş qəbul etməzdən əvvəl aydın cavab alır.",
+f1_t:"İstənilən tətbiqin üstündə qiymətləndirmə",f1_d:"Sifariş ekranının üstündə kiçik kart görünür: km və dəqiqə üzrə tarif və aydın qiymət.",
+f2_t:"Real xalis gəlir",f2_d:"Yanacaq sərfi, yanacaq qiyməti və vergi dərəcəniz çıxılır — həqiqətən nə qaldığını görürsünüz.",
+f3_t:"Taksi və çatdırılma",f3_d:"Uber, Bolt, Wolt, FreeNow və Stuart daxildir. Müştəriyə gediş və səfər birlikdə hesablanır.",
+f4_t:"İstənilən tətbiq, istənilən ölkə",f4_d:"Öz tətbiqinizi əlavə edin və üç toxunuşla kalibrləyin. 26 valyuta və 17 dil.",
+f5_t:"Öz qaydalarınız",f5_d:"Hazır profil seçin və ya pis, orta və yaxşı sifarişlər üçün öz hədlərinizi qoyun. Günlük və həftəlik statistika.",
+f6_t:"Məxfi və təhlükəsiz",f6_d:"Hər şey telefonunuzda emal olunur. WayArs yalnız ekranı oxuyur — heç vaxt sizin yerinizə toxunmur və sifariş qəbul etmir.",
+how_title:"Necə işləyir",s1_t:"Quraşdırın və icazə verin",s1_d:"Əlçatanlıq xidmətini və overlay-i aktiv edin — tətbiq hər addımı izah edir.",
+s2_t:"Özünüzə uyğunlaşdırın",s2_d:"Valyuta, nəqliyyat, yanacaq qiyməti və vergi dərəcəsini seçin.",s3_t:"Sürün",s3_d:"Hər yeni sifariş bir saniyədə qiymət alır. Siz qərar verirsiniz, WayArs hesablayır.",
+apps_title:"İşləyir",apps_more:"+ özünüz əlavə etdiyiniz istənilən tətbiq",dl_title:"Bu gündən daha ağıllı qazanın",dl_sub:"WayArs-ı Google Play-dən yükləyin və pulsuz sınayın.",
+contact_title:"Əlaqə",contact_sub:"Suallar, ideyalar və ya sifarişlərlə problem? İstənilən vaxt yazın.",foot_privacy:"Məxfilik siyasəti",foot_studio:"AP Studio — bütün tətbiqlər"},
+
+hy:{meta_title:"WayArs — պատվերների օգնական տաքսու վարորդների և առաքիչների համար",meta_desc:"WayArs-ը կարդում է նոր պատվերները Uber-ից, Bolt-ից, Wolt-ից, FreeNow-ից և այլ հավելվածներից ու անմիջապես ցույց է տալիս զուտ գումարը վառելիքից և հարկից հետո, ինչպես նաև՝ արդյոք պատվերը շահավետ է։",
+nav_features:"Հնարավորություններ",nav_how:"Ինչպես է աշխատում",nav_contact:"Կապ",cta_download:"Ներբեռնել",
+hero_badge:"Տաքսու վարորդների և առաքիչների համար",hero_title_1:"Մեկ վայրկյանում իմացեք՝",hero_title_2:"արդյոք պատվերը շահավետ է",
+hero_sub:"WayArs-ը կարդում է նոր պատվերները Uber-ից, Bolt-ից, Wolt-ից, FreeNow-ից և այլ հավելվածներից ու անմիջապես ցույց է տալիս զուտ գումարը վառելիքից և հարկից հետո, ինչպես նաև՝ արդյոք պատվերը շահավետ է։",
+gp_small:"Ներբեռնեք",hero_trial:"30 րոպե անվճար փորձարկում",meta_langs:"17 լեզու",meta_curr:"26 արժույթ",
+mock_new:"ՆՈՐ ՊԱՏՎԵՐ · Uber",mock_net:"զուտ",mock_after:"վառելիքից և հարկից հետո · 39,6 կմ · 55 ր",mock_km:"մեկ կմ-ի համար",mock_min:"մեկ րոպեի համար",mock_ok:"Շահավետ է ✓",
+feat_title:"Այն ամենը, ինչ պետք է վարորդին",feat_sub:"Բավական է կռահել։ Յուրաքանչյուր պատվեր հստակ պատասխան է ստանում՝ նախքան ընդունելը։",
+f1_t:"Գնահատական ցանկացած հավելվածի վրա",f1_d:"Պատվերի էկրանի վրա հայտնվում է փոքր քարտ՝ դրույք մեկ կմ-ի և րոպեի համար և հստակ գնահատական։",
+f2_t:"Իրական զուտ շահույթ",f2_d:"Վառելիքի ծախսը, գինը և ձեր հարկի դրույքը հանվում են․ տեսնում եք, թե իրականում որքան է մնում։",
+f3_t:"Տաքսի և առաքում",f3_d:"Uber, Bolt, Wolt, FreeNow և Stuart ներկառուցված են։ Մոտեցումը և ուղևորությունը հաշվվում են միասին։",
+f4_t:"Ցանկացած հավելված, ցանկացած երկիր",f4_d:"Ավելացրեք ձեր հավելվածը և կալիբրացրեք այն երեք հպումով։ 26 արժույթ և 17 լեզու։",
+f5_t:"Ձեր կանոնները",f5_d:"Ընտրեք պատրաստի պրոֆիլ կամ սահմանեք ձեր շեմերը վատ, միջին և լավ պատվերների համար։ Օրական և շաբաթական վիճակագրություն։",
+f6_t:"Գաղտնի և անվտանգ",f6_d:"Ամեն ինչ մշակվում է ձեր հեռախոսում։ WayArs-ը միայն կարդում է էկրանը․ երբեք չի սեղմում և չի ընդունում պատվերներ ձեր փոխարեն։",
+how_title:"Ինչպես է աշխատում",s1_t:"Տեղադրեք և թույլատրեք մուտքը",s1_d:"Միացրեք մատչելիության ծառայությունը և overlay-ը․ հավելվածը բացատրում է յուրաքանչյուր քայլ։",
+s2_t:"Կարգավորեք ձեզ համար",s2_d:"Ընտրեք արժույթը, մեքենան, վառելիքի գինը և հարկի դրույքը։",s3_t:"Վարեք",s3_d:"Յուրաքանչյուր նոր պատվեր գնահատական է ստանում մեկ վայրկյանում։ Դուք եք որոշում, WayArs-ը հաշվում է։",
+apps_title:"Աշխատում է",apps_more:"+ ցանկացած հավելված, որը կավելացնեք ինքներդ",dl_title:"Սկսեք ավելի խելացի վաստակել այսօր",dl_sub:"Ներբեռնեք WayArs-ը Google Play-ից և փորձեք անվճար։",
+contact_title:"Կապ",contact_sub:"Հարցեր, գաղափարներ կամ խնդիր պատվերների հետ։ Գրեք մեզ ցանկացած ժամանակ։",foot_privacy:"Գաղտնիության քաղաքականություն",foot_studio:"AP Studio — բոլոր հավելվածները"},
+
+ka:{meta_title:"WayArs — შეკვეთების ასისტენტი ტაქსისტებისა და კურიერებისთვის",meta_desc:"WayArs კითხულობს ახალ შეკვეთებს Uber-დან, Bolt-დან, Wolt-დან, FreeNow-დან და სხვა აპებიდან და მაშინვე აჩვენებს წმინდა თანხას საწვავისა და გადასახადის შემდეგ — და ღირს თუ არა შეკვეთა.",
+nav_features:"შესაძლებლობები",nav_how:"როგორ მუშაობს",nav_contact:"კონტაქტი",cta_download:"ჩამოტვირთვა",
+hero_badge:"ტაქსისტებისა და კურიერებისთვის",hero_title_1:"ერთ წამში გაიგეთ,",hero_title_2:"ღირს თუ არა შეკვეთა",
+hero_sub:"WayArs კითხულობს ახალ შეკვეთებს Uber-დან, Bolt-დან, Wolt-დან, FreeNow-დან და სხვა აპებიდან და მაშინვე აჩვენებს წმინდა თანხას საწვავისა და გადასახადის შემდეგ — და ღირს თუ არა შეკვეთა.",
+gp_small:"ჩამოტვირთეთ",hero_trial:"30 წუთი უფასო საცდელი",meta_langs:"17 ენა",meta_curr:"26 ვალუტა",
+mock_new:"ახალი შეკვეთა · Uber",mock_net:"წმინდა",mock_after:"საწვავისა და გადასახადის შემდეგ · 39,6 კმ · 55 წთ",mock_km:"კმ-ზე",mock_min:"წუთში",mock_ok:"ღირს ✓",
+feat_title:"ყველაფერი, რაც მძღოლს სჭირდება",feat_sub:"აღარ გამოიცნოთ. ყოველი შეკვეთა მკაფიო პასუხს იღებს მიღებამდე.",
+f1_t:"შეფასება ნებისმიერ აპზე",f1_d:"შეკვეთის ეკრანზე ჩნდება პატარა ბარათი: ტარიფი კმ-ზე, წუთში და მკაფიო შეფასება.",
+f2_t:"რეალური წმინდა მოგება",f2_d:"საწვავის ხარჯი, ფასი და თქვენი გადასახადის განაკვეთი აკლდება — ხედავთ, რეალურად რამდენი გრჩებათ.",
+f3_t:"ტაქსი და მიწოდება",f3_d:"Uber, Bolt, Wolt, FreeNow და Stuart ჩაშენებულია. მისვლა და თავად მგზავრობა ერთად ითვლება.",
+f4_t:"ნებისმიერი აპი, ნებისმიერი ქვეყანა",f4_d:"დაამატეთ თქვენი აპი და დააკალიბრეთ სამი შეხებით. 26 ვალუტა და 17 ენა.",
+f5_t:"თქვენი წესები",f5_d:"აირჩიეთ მზა პროფილი ან დააყენეთ საკუთარი ზღვრები ცუდი, საშუალო და კარგი შეკვეთებისთვის. დღიური და კვირის სტატისტიკა.",
+f6_t:"კონფიდენციალური და უსაფრთხო",f6_d:"ყველაფერი თქვენს ტელეფონზე მუშავდება. WayArs მხოლოდ ეკრანს კითხულობს — არასდროს აჭერს და არ იღებს შეკვეთებს თქვენ ნაცვლად.",
+how_title:"როგორ მუშაობს",s1_t:"დააინსტალირეთ და მიეცით წვდომა",s1_d:"ჩართეთ სპეციალური შესაძლებლობების სერვისი და overlay — აპი ყველა ნაბიჯს განგიმარტავთ.",
+s2_t:"მოარგეთ თქვენს თავს",s2_d:"აირჩიეთ ვალუტა, ტრანსპორტი, საწვავის ფასი და გადასახადის განაკვეთი.",s3_t:"იმოძრავეთ",s3_d:"ყოველი ახალი შეკვეთა ერთ წამში იღებს შეფასებას. თქვენ წყვეტთ, WayArs ითვლის.",
+apps_title:"მუშაობს",apps_more:"+ ნებისმიერი აპი, რომელსაც თავად დაამატებთ",dl_title:"დაიწყეთ ჭკვიანურად შოვნა დღესვე",dl_sub:"ჩამოტვირთეთ WayArs Google Play-დან და სცადეთ უფასოდ.",
+contact_title:"კონტაქტი",contact_sub:"კითხვები, იდეები ან პრობლემა შეკვეთებთან? მოგვწერეთ ნებისმიერ დროს.",foot_privacy:"კონფიდენციალურობის პოლიტიკა",foot_studio:"AP Studio — ყველა აპი"},
+
+uz:{meta_title:"WayArs — taksi haydovchilari va kuryerlar uchun buyurtma yordamchisi",meta_desc:"WayArs Uber, Bolt, Wolt, FreeNow va boshqa ilovalardan yangi buyurtmalarni o‘qiydi va yoqilg‘i hamda soliqdan keyingi sof summani, shuningdek buyurtma foydali yoki yo‘qligini darhol ko‘rsatadi.",
+nav_features:"Imkoniyatlar",nav_how:"Qanday ishlaydi",nav_contact:"Aloqa",cta_download:"Yuklab olish",
+hero_badge:"Taksi haydovchilari va kuryerlar uchun",hero_title_1:"Bir soniyada biling:",hero_title_2:"buyurtma foydalimi",
+hero_sub:"WayArs Uber, Bolt, Wolt, FreeNow va boshqa ilovalardan yangi buyurtmalarni o‘qiydi va yoqilg‘i hamda soliqdan keyingi sof summani, shuningdek buyurtma foydali yoki yo‘qligini darhol ko‘rsatadi.",
+gp_small:"Yuklab oling:",hero_trial:"30 daqiqa bepul sinov",meta_langs:"17 til",meta_curr:"26 valyuta",
+mock_new:"YANGI BUYURTMA · Uber",mock_net:"sof",mock_after:"yoqilg‘i va soliqdan keyin · 39,6 km · 55 daq",mock_km:"km uchun",mock_min:"daqiqa uchun",mock_ok:"Foydali ✓",
+feat_title:"Haydovchiga kerak bo‘lgan hamma narsa",feat_sub:"Taxmin qilishga chek. Har bir buyurtma qabul qilishingizdan oldin aniq javob oladi.",
+f1_t:"Har qanday ilova ustida baho",f1_d:"Buyurtma ekrani ustida kichik karta paydo bo‘ladi: km va daqiqa uchun tarif hamda aniq baho.",
+f2_t:"Haqiqiy sof foyda",f2_d:"Yoqilg‘i sarfi, narxi va soliq stavkangiz ayiriladi — aslida qancha qolishini ko‘rasiz.",
+f3_t:"Taksi va yetkazib berish",f3_d:"Uber, Bolt, Wolt, FreeNow va Stuart o‘rnatilgan. Mijozga borish va safarning o‘zi birga hisoblanadi.",
+f4_t:"Har qanday ilova, har qanday mamlakat",f4_d:"O‘z ilovangizni qo‘shing va uch marta bosish bilan kalibrlang. 26 valyuta va 17 til.",
+f5_t:"O‘z qoidalaringiz",f5_d:"Tayyor profilni tanlang yoki yomon, o‘rtacha va yaxshi buyurtmalar uchun o‘z chegaralaringizni belgilang. Kunlik va haftalik statistika.",
+f6_t:"Maxfiy va xavfsiz",f6_d:"Hammasi telefoningizda qayta ishlanadi. WayArs faqat ekranni o‘qiydi — hech qachon siz uchun bosmaydi va buyurtma qabul qilmaydi.",
+how_title:"Qanday ishlaydi",s1_t:"O‘rnating va ruxsat bering",s1_d:"Maxsus imkoniyatlar xizmati va overlayni yoqing — ilova har bir qadamni tushuntiradi.",
+s2_t:"O‘zingizga moslang",s2_d:"Valyuta, transport, yoqilg‘i narxi va soliq stavkasini tanlang.",s3_t:"Haydang",s3_d:"Har bir yangi buyurtma bir soniyada baho oladi. Siz qaror qilasiz, WayArs hisoblaydi.",
+apps_title:"Ishlaydi",apps_more:"+ o‘zingiz qo‘shgan har qanday ilova",dl_title:"Bugundan aqlliroq daromad qiling",dl_sub:"WayArs’ni Google Play’dan yuklab oling va bepul sinab ko‘ring.",
+contact_title:"Aloqa",contact_sub:"Savollar, g‘oyalar yoki buyurtmalar bilan muammo? Istalgan vaqtda yozing.",foot_privacy:"Maxfiylik siyosati",foot_studio:"AP Studio — barcha ilovalar"}
+};
+
+const STORE_KEY = "wayars_site_lang";
+const SUPPORTED = LANGS.map(l => l[0]);
+// Browser codes that map to one of our languages (e.g. Norwegian "no"/"nn" -> "nb").
+const ALIAS = {no:"nb",nn:"nb"};
+
+function detectLang(){
+  const q = new URLSearchParams(location.search).get("lang");
+  if (q && SUPPORTED.includes(q.toLowerCase())) return q.toLowerCase();
+  try { const saved = localStorage.getItem(STORE_KEY); if (saved && SUPPORTED.includes(saved)) return saved; } catch(e){}
+  const list = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"]);
+  for (const full of list) {
+    const base = String(full).toLowerCase().split("-")[0];
+    const code = ALIAS[base] || base;
+    if (SUPPORTED.includes(code)) return code;
+  }
+  return "en";
+}
+
+function applyLang(lang, save){
+  const dict = Object.assign({}, T.en, T[lang] || {});
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const v = dict[el.dataset.i18n]; if (v != null) el.textContent = v;
+  });
+  document.title = dict.meta_title;
+  const md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute("content", dict.meta_desc);
+  document.getElementById("langCode").textContent = lang.toUpperCase();
+  document.querySelectorAll("#langMenu button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
+  document.querySelectorAll(".gp-link").forEach(a => a.href = PLAY_URL + "&hl=" + lang);
+  if (save) { try { localStorage.setItem(STORE_KEY, lang); } catch(e){} }
+}
+
+// language menu
+const menu = document.getElementById("langMenu"), langBox = document.getElementById("lang"), langBtn = document.getElementById("langBtn");
+LANGS.forEach(([code, name]) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.dataset.lang = code; b.setAttribute("role","option");
+  b.innerHTML = name + "<span>" + code.toUpperCase() + "</span>";
+  b.addEventListener("click", () => { applyLang(code, true); closeMenu(); });
+  menu.appendChild(b);
+});
+function closeMenu(){ langBox.classList.remove("open"); langBtn.setAttribute("aria-expanded","false"); }
+langBtn.addEventListener("click", e => { e.stopPropagation(); const o = langBox.classList.toggle("open"); langBtn.setAttribute("aria-expanded", String(o)); });
+document.addEventListener("click", e => { if (!langBox.contains(e.target)) closeMenu(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
+
+applyLang(detectLang(), false);
+
+// reveal on scroll
+const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), {threshold:.12}) : null;
+document.querySelectorAll(".reveal").forEach(el => io ? io.observe(el) : el.classList.add("in"));
+</script>
+</body>
+</html>
