@@ -24,7 +24,7 @@
     --r-lg:24px; --r-md:16px; --maxw:1160px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;background:var(--bg)}
+  html{scroll-behavior:smooth;background:var(--bg);overflow-x:hidden}
   body{
     background:
       radial-gradient(900px 520px at 85% -8%, rgba(0,230,118,.16), transparent 60%),
@@ -87,8 +87,8 @@
   .meta-row span{display:flex;align-items:center;gap:6px}
 
   /* phone mockup */
-  .phone-stage{position:relative;display:flex;justify-content:center;padding:20px 0}
-  .glow{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,.28),transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);filter:blur(10px)}
+  .phone-stage{position:relative;display:flex;justify-content:center;padding:20px 0;overflow-x:clip}
+  .glow{position:absolute;width:min(420px,100%);height:auto;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,.28),transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);filter:blur(10px)}
   .phone{position:relative;text-align:left;width:300px;height:610px;border-radius:46px;background:#05070d;border:10px solid #1b2131;
     box-shadow:0 40px 90px rgba(0,0,0,.7),inset 0 0 0 2px #2c3350;overflow:hidden}
   .phone .notch{position:absolute;top:12px;left:50%;width:90px;height:24px;margin-left:-45px;border-radius:14px;background:#000;z-index:3}

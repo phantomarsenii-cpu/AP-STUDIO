@@ -35,7 +35,7 @@
     --maxw:1180px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;background:var(--bg-2);min-height:100%;}
+  html{scroll-behavior:smooth;background:var(--bg-2);min-height:100%;overflow-x:hidden;}
   body{
     background:
       radial-gradient(1100px 600px at 82% -10%, rgba(30,58,138,.55), transparent 60%),
@@ -139,7 +139,7 @@
   }
 
   /* ===== HERO ===== */
-  .hero{padding:96px 0 70px;position:relative;}
+  .hero{padding:96px 0 70px;position:relative;overflow-x:clip;}
   .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;}
   .hero h1{font-size:clamp(34px,4.6vw,54px);font-weight:700;line-height:1.08;margin:20px 0 20px;}
   .hero h1 .accent{
@@ -800,7 +800,7 @@ function observeReveal(){
 
   function resize(){
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    w = window.innerWidth;
+    w = document.documentElement.clientWidth || window.innerWidth;
     h = window.innerHeight;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
